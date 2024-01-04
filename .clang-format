@@ -1,0 +1,19 @@
+Language: Cpp
+BasedOnStyle: LLVM
+
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterStruct: true
+  AfterUnion: true
+ColumnLimit: 140
+DeriveLineEnding: false
+DerivePointerAlignment: false
+IndentCaseLabels: true
+PackConstructorInitializers: NextLine
+PointerAlignment: Left
+SortIncludes: CaseInsensitive
+UseCRLF: false
