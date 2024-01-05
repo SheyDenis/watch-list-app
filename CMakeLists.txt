@@ -11,6 +11,7 @@ SET(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
 )
 INCLUDE(cmake-utils)
+INCLUDE(iwyu)
 
 FIND_PACKAGE(fmt REQUIRED)
 FIND_PACKAGE(httplib REQUIRED)
@@ -19,6 +20,8 @@ FIND_PACKAGE(RapidJSON REQUIRED)
 
 ADD_EXECUTABLE(${EXEC_NAME}
                src/main.cpp
+               src/settings/server-settings-loader.cpp
+               src/settings/server-settings.cpp
 )
 SET_CMAKE_TARGET_PROPERTIES(${EXEC_NAME})
 
@@ -43,6 +46,10 @@ TARGET_COMPILE_OPTIONS(${EXEC_NAME}
                        PRIVATE
                        ${DEFAULT_COMPILER_WARNING_FLAGS}
 )
+
+ADD_CUSTOM_COMMAND(TARGET ${EXEC_NAME} PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/generate-server-settings-schema.cmake)
+INCLUDE_WHAT_YOU_USE(${EXEC_NAME})
 
 IF (NOT DISABLE_TESTS)
     ENABLE_TESTING()

@@ -1,0 +1,15 @@
+MACRO(INCLUDE_WHAT_YOU_USE __target)
+    IF (NOT DEFINED ${IWYU_PATH})
+        FIND_PROGRAM(IWYU_PATH NAMES include-what-you-use iwyu REQUIRED)
+        IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+            SET(IWYU_ERR 0)
+        ELSE ()
+            SET(IWYU_ERR 1)
+        ENDIF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+        SET(IWYU_PATH_AND_OPTIONS ${IWYU_PATH} -Xiwyu --error=${IWYU_ERR})
+        UNSET(IWYU_ERR)
+    ENDIF ()
+
+    SET_PROPERTY(TARGET ${__target} PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH_AND_OPTIONS})
+ENDMACRO()

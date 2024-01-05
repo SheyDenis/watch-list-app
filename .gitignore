@@ -3,6 +3,7 @@
 CMakeUserPresets.json
 build/
 cmake-build-*/
+include/watch-list-server/server-settings-schema.hpp
 
 # IDE
 
