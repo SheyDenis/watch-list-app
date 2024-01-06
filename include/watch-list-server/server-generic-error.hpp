@@ -27,16 +27,25 @@ class ServerGenericError {
   std::optional<int> os_error_;
 
  public:
-  ServerGenericError(std::string error, std::optional<std::string> ex, std::optional<int> os_error)
-      : error_(std::move(error)), ex_(std::move(ex)), os_error_(os_error) {}
+  ServerGenericError(std::string error, std::optional<std::reference_wrapper<std::exception const>> ex, std::optional<int> os_error)
+      : error_(std::move(error)), ex_(std::nullopt), os_error_(os_error) {
+    if (ex.has_value()) {
+      ex_ = ex->get().what();
+    }
+  }
   explicit ServerGenericError(std::string error) : ServerGenericError(std::move(error), std::nullopt, std::nullopt) {}
-  ServerGenericError(std::string error, std::string ex) : ServerGenericError(std::move(error), std::move(ex), std::nullopt) {}
+  ServerGenericError(std::string error, std::exception const& ex) : ServerGenericError(std::move(error), ex, std::nullopt) {}
   ServerGenericError(std::string error, int os_error) : ServerGenericError(std::move(error), std::nullopt, os_error) {}
 
   explicit operator std::string() const {
     if (ServerConstants::include_debug_data()) {
-      return fmt::format(
-          FMT_STRING("{} [ex={}][os_error={}]"), error_, ex_.has_value() ? *ex_ : "N/A", os_error_.has_value() ? *os_error_ : 0);
+      std::string os_error_str = "0";
+
+      if (os_error_.has_value()) {
+        os_error_str = fmt::format("{} {}", *os_error_, strerror(*os_error_));
+      }
+
+      return fmt::format(FMT_STRING("{} [ex={}][os_error={}]"), error_, ex_.has_value() ? *ex_ : "N/A", os_error_str);
     }
     return error_;
   }
@@ -47,5 +56,12 @@ template <typename V>
 using ServerGenericErrorVariant = std::variant<ServerGenericError, V>;
 
 }  // namespace watch_list_app::server
+
+template <>
+struct fmt::formatter<watch_list_app::server::ServerGenericError> : fmt::formatter<std::string> {
+  auto format(watch_list_app::server::ServerGenericError v, format_context& ctx) const -> decltype(ctx.out()) {
+    return format_to(ctx.out(), std::string(v));
+  }
+};
 
 #endif  // SERVER_GENERIC_ERROR_HPP_

@@ -6,14 +6,14 @@
  *
  */
 
-#include <spdlog/logger.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
 #include <string>
 
 #include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/server-constants.hpp"
+#include "watch-list-server/server-listener.hpp"
+#include "watch-list-server/server-logger.hpp"
 #include "watch-list-server/settings/server-settings-loader.hpp"
 #include "watch-list-server/settings/server-settings.hpp"
 
@@ -22,18 +22,7 @@ void show_help() {
 }
 
 void configure_logger(spdlog::level::level_enum level = spdlog::level::level_enum::debug) {
-  if (spdlog::get(watch_list_app::server::ServerConstants::kRootLoggerName) == nullptr) {
-    spdlog::set_default_logger(spdlog::stderr_color_mt(watch_list_app::server::ServerConstants::kRootLoggerName));
-  }
-  switch (level) {
-    case spdlog::level::level_enum::trace:
-    case spdlog::level::level_enum::debug:
-      spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][%l][%n][%!][%t] %v");
-      break;
-    default:
-      spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e][%l][%n][%t] %v");
-  }
-  spdlog::set_level(level);
+  watch_list_app::server::ServerLogger::configure_logger(watch_list_app::server::ServerConstants::kRootLoggerName, level);
 }
 
 bool settings_path(int argc, char* argv[], std::string& output) {
@@ -49,18 +38,38 @@ bool settings_path(int argc, char* argv[], std::string& output) {
   return !output.empty();
 }
 
+watch_list_app::server::OptionalServerGenericError register_event_handlers() {
+  watch_list_app::server::LOG_NOT_IMPLEMENTED();
+  return std::nullopt;
+}
+
 int main(int argc, char* argv[]) {
   configure_logger();
 
   std::string settings_file_path;
   if (!settings_path(argc, argv, settings_file_path)) {
     show_help();
-    exit(-1);
+    return -1;
   }
   if (auto const err = watch_list_app::server::settings::ServerSettingsLoader::load_settings(settings_file_path)) {
-    spdlog::error("Failed to load settings [{}]", std::string(*err));
+    spdlog::error("Failed to load settings [{}]", *err);
+    return -1;
   }
   configure_logger(watch_list_app::server::settings::ServerSettings::logging_settings().logger_level);
+
+  watch_list_app::server::ServerListener listener;
+  if (auto const err = register_event_handlers()) {
+    spdlog::error("Failed to register event handlers [{}]", *err);
+    return -1;
+  }
+  if (auto const err = listener.initialize()) {
+    spdlog::error("Failed to initialize server [{}]", *err);
+    return -1;
+  }
+  if (auto const err = listener.run()) {
+    spdlog::error("Failed to run server [{}]", *err);
+    return -1;
+  }
 
   return 0;
 }

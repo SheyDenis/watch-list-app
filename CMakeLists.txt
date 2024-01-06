@@ -19,7 +19,11 @@ FIND_PACKAGE(spdlog REQUIRED)
 FIND_PACKAGE(RapidJSON REQUIRED)
 
 ADD_EXECUTABLE(${EXEC_NAME}
+               src/handlers/handler-base.cpp
+               src/handlers/handler-index.cpp
                src/main.cpp
+               src/server-listener.cpp
+               src/server-logger.cpp
                src/settings/server-settings-loader.cpp
                src/settings/server-settings.cpp
 )
