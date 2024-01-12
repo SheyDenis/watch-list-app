@@ -22,6 +22,7 @@ FIND_PACKAGE(RapidJSON REQUIRED)
 
 ADD_EXECUTABLE(${EXEC_NAME}
                src/handlers/handler-base.cpp
+               src/handlers/handler-health-check.cpp
                src/handlers/handler-index.cpp
                src/main.cpp
                src/server-listener.cpp

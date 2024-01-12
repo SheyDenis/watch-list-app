@@ -11,8 +11,10 @@
 
 #include <httplib/httplib.h>
 
+#include <functional>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
@@ -23,6 +25,28 @@
 namespace watch_list_app::server {
 
 class HandlerBase {
+ private:
+  static std::vector<std::reference_wrapper<HandlerBase const>> registered_handlers_;
+  struct {
+    int call_delete_ = 0;
+    int call_get_ = 0;
+    int call_patch_ = 0;
+    int call_post_ = 0;
+    int call_put_ = 0;
+    int error_4xx_delete_ = 0;
+    int error_4xx_get_ = 0;
+    int error_4xx_patch_ = 0;
+    int error_4xx_post_ = 0;
+    int error_4xx_put_ = 0;
+    int error_5xx_delete_ = 0;
+    int error_5xx_get_ = 0;
+    int error_5xx_patch_ = 0;
+    int error_5xx_post_ = 0;
+    int error_5xx_put_ = 0;
+  } call_metrics_;
+
+  friend class HandlerHealthCheck;
+
  protected:
   ServerLogger logger_;
   std::string const handler_name_;
@@ -35,11 +59,21 @@ class HandlerBase {
  protected:
   explicit HandlerBase(std::string const& handler_name);
 
+  [[nodiscard]] static auto const& registered_handlers() {
+    return registered_handlers_;
+  }
+
   template <typename Derived>
   [[nodiscard]] OptionalServerGenericError register_endpoints_internal(httplib::Server* server) {
     if (HandlerTraits<Derived>::handle_delete) {
       server->Delete(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        ++call_metrics_.call_delete_;
         if (auto const err = handle_delete(req, res)) {
+          if (err->request_info.return_code >= 500) {
+            ++call_metrics_.error_5xx_delete_;
+          } else {
+            ++call_metrics_.error_4xx_delete_;
+          }
           logger_.error("Failed to handle [DELETE] request [{}]", *err);
         }
       });
@@ -47,7 +81,13 @@ class HandlerBase {
 
     if (HandlerTraits<Derived>::handle_get) {
       server->Get(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        ++call_metrics_.call_get_;
         if (auto const err = handle_get(req, res)) {
+          if (err->request_info.return_code >= 500) {
+            ++call_metrics_.error_5xx_get_;
+          } else {
+            ++call_metrics_.error_4xx_get_;
+          }
           logger_.error("Failed to handle [GET] request [{}]", *err);
         }
       });
@@ -55,7 +95,13 @@ class HandlerBase {
 
     if (HandlerTraits<Derived>::handle_patch) {
       server->Patch(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        ++call_metrics_.call_patch_;
         if (auto const err = handle_patch(req, res)) {
+          if (err->request_info.return_code >= 500) {
+            ++call_metrics_.error_5xx_patch_;
+          } else {
+            ++call_metrics_.error_4xx_patch_;
+          }
           logger_.error("Failed to handle [PATCH] request [{}]", *err);
         }
       });
@@ -63,7 +109,13 @@ class HandlerBase {
 
     if (HandlerTraits<Derived>::handle_post) {
       server->Post(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        ++call_metrics_.call_post_;
         if (auto const err = handle_post(req, res)) {
+          if (err->request_info.return_code >= 500) {
+            ++call_metrics_.error_5xx_post_;
+          } else {
+            ++call_metrics_.error_4xx_post_;
+          }
           logger_.error("Failed to handle [POST] request [{}]", *err);
         }
       });
@@ -71,12 +123,19 @@ class HandlerBase {
 
     if (HandlerTraits<Derived>::handle_put) {
       server->Put(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        ++call_metrics_.call_put_;
         if (auto const err = handle_put(req, res)) {
+          if (err->request_info.return_code >= 500) {
+            ++call_metrics_.error_5xx_put_;
+          } else {
+            ++call_metrics_.error_4xx_put_;
+          }
           logger_.error("Failed to handle [PUT] request [{}]", *err);
         }
       });
     }
 
+    registered_handlers_.insert(registered_handlers_.cend(), *this);
     return std::nullopt;
   }
 
@@ -86,8 +145,16 @@ class HandlerBase {
   [[nodiscard]] virtual OptionalHandlerError handle_post(httplib::Request const& req, httplib::Response& res);
   [[nodiscard]] virtual OptionalHandlerError handle_put(httplib::Request const& req, httplib::Response& res);
 
+  [[nodiscard]] auto const& call_metrics() const {
+    return call_metrics_;
+  }
+
  public:
   virtual ~HandlerBase() = default;
+
+  [[nodiscard]] std::string const& handler_name() const {
+    return handler_name_;
+  }
 
   [[nodiscard]] virtual OptionalServerGenericError register_endpoints(httplib::Server* server) = 0;
 };

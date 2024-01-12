@@ -28,9 +28,26 @@ OptionalServerGenericError ServerSettings::initialize(rapidjson::Document const&
 }
 
 ServerSettings::ServerSettings(rapidjson::Document const& settings_json) {
-  if (settings_json["logging"].HasMember("level")) {
-    logging_settings_.logger_level = strcmp(settings_json["logging"]["level"].GetString(), "debug") == 0 ? spdlog::level::level_enum::debug
-                                                                                                         : spdlog::level::level_enum::info;
+  if (settings_json.HasMember("logging")) {
+    initialize_logging_settings(settings_json["logging"].GetObject());
+  }
+  if (settings_json.HasMember("server")) {
+    initialize_server_settings(settings_json["server"].GetObject());
+  }
+}
+
+void ServerSettings::initialize_server_settings(rapidjson::Value::ConstObject const& settings_json) {
+  if (settings_json.HasMember("server_address")) {
+    server_settings_.server_address = settings_json["server_address"].GetString();
+  }
+  if (settings_json.HasMember("server_port")) {
+    server_settings_.server_port = settings_json["server_port"].GetInt();
+  }
+}
+
+void ServerSettings::initialize_logging_settings(rapidjson::Value::ConstObject const& settings_json) {
+  if (settings_json.HasMember("level")) {
+    logging_settings_.logger_level = spdlog::level::from_str(settings_json["level"].GetString());
   }
 }
 

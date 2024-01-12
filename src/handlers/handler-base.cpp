@@ -9,7 +9,10 @@
 #include "watch-list-server/handlers/handler-base.hpp"
 
 #include <httplib/httplib.h>
+
 namespace watch_list_app::server {
+
+std::vector<std::reference_wrapper<HandlerBase const>> HandlerBase::registered_handlers_;
 
 HandlerBase::HandlerBase(std::string const& handler_name) : logger_(handler_name), handler_name_(handler_name) {}
 

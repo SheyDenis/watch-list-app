@@ -2,5 +2,39 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "WatchListApp Server Settings JSON Schema",
   "type": "object",
-  "additionalProperties": true
+  "additionalProperties": false,
+  "properties": {
+    "server": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "server_port": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+        "server_address": {
+          "type": "string"
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "err",
+            "critical",
+            "off"
+          ]
+        }
+      }
+    }
+  }
 }

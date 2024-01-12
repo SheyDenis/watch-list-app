@@ -1,13 +1,13 @@
 /**
- * @file handler-index.hpp
+ * @file handler-health-check.hpp
  * @author denis
  * @brief
- * @date 12024-01-06
+ * @date 12024-01-12
  *
  */
 
-#ifndef HANDLER_INDEX_HPP_
-#define HANDLER_INDEX_HPP_
+#ifndef HANDLER_HEALTH_CHECK_HPP_
+#define HANDLER_HEALTH_CHECK_HPP_
 
 #include <httplib/httplib.h>
 
@@ -20,24 +20,24 @@
 
 namespace watch_list_app::server {
 
-class HandlerIndex : public HandlerBase {
+class HandlerHealthCheck : public HandlerBase {
  private:
-  friend struct HandlerInstance<HandlerIndex>;
+  friend struct HandlerInstance<HandlerHealthCheck>;
 
  protected:
-  HandlerIndex();
+  HandlerHealthCheck();
 
   [[nodiscard]] OptionalHandlerError handle_get(httplib::Request const& req, httplib::Response& res) override;
 
  public:
-  ~HandlerIndex() override = default;
+  ~HandlerHealthCheck() override = default;
 
   [[nodiscard]] OptionalServerGenericError register_endpoints(httplib::Server* server) override;
 };
 
 template <>
-struct HandlerTypes<HandlerIndex> {
-  static constexpr char const* resource_pattern = "/";
+struct HandlerTypes<HandlerHealthCheck> {
+  static constexpr char const* resource_pattern = "/health";
 
   static bool constexpr handle_delete = false;
   static bool constexpr handle_get = true;
@@ -48,4 +48,4 @@ struct HandlerTypes<HandlerIndex> {
 
 }  // namespace watch_list_app::server
 
-#endif  // HANDLER_INDEX_HPP_
+#endif  // HANDLER_HEALTH_CHECK_HPP_

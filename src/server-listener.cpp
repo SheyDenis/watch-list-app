@@ -12,12 +12,15 @@
 #include <httplib.h>
 
 #include <cerrno>
+#include <functional>
 #include <optional>
 #include <string>
 
 #include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/handlers/handler-base.hpp"
+#include "watch-list-server/handlers/handler-health-check.hpp"
 #include "watch-list-server/handlers/handler-index.hpp"
+#include "watch-list-server/settings/server-settings.hpp"
 
 namespace watch_list_app::server {
 
@@ -62,18 +65,28 @@ OptionalServerGenericError ServerListener::initialize() {
   //
   // server_->new_task_queue = []()->httplib::ThreadPool* { return new httplib::ThreadPool(5); };  // TODO - Get from settings.
 
-  // TODO - Register handlers...
+  std::vector<std::reference_wrapper<HandlerBase>> handlers{
+      HandlerInstance<HandlerHealthCheck>::instance(),
+      HandlerInstance<HandlerIndex>::instance(),
+  };
+  logger_.info("Registering [{}] handlers", handlers.size());
 
-  if (auto err = HandlerInstance<HandlerIndex>::instance().register_endpoints(server_.get())) {
-    return err;
+  for (auto const& itr : handlers) {
+    logger_.info("Registering handler [{}]", itr.get().handler_name());
+    if (auto err = itr.get().register_endpoints(server_.get())) {
+      logger_.error("Failed to register handler [{}]", itr.get().handler_name());
+      return err;
+    }
   }
+
+  logger_.info("Finished registering handlers");
 
   return std::nullopt;
 }
 
 OptionalServerGenericError ServerListener::run() {
-  std::string const server_address("localhost");
-  int const server_port = 54135;
+  std::string const& server_address(settings::ServerSettings::server_settings().server_address);
+  int const server_port = settings::ServerSettings::server_settings().server_port;
 
   logger_.info("Start listening on [{}:{}]", server_address, server_port);
 

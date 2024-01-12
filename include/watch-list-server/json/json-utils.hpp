@@ -13,6 +13,7 @@
 #include <rapidjson/error/en.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/prettywriter.h>
 #include <rapidjson/reader.h>
 #include <rapidjson/stream.h>
 #include <rapidjson/stringbuffer.h>
@@ -47,6 +48,24 @@ class JSONUtils {
     }
 
     return doc;
+  }
+
+  [[nodiscard]] static std::string dump(rapidjson::Value const& value, unsigned short indent = 0) {
+    if (indent > 0) {
+      return dump_indent(value, indent);
+    }
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    value.Accept(writer);
+    return buffer.GetString();
+  }
+
+  [[nodiscard]] static std::string dump_indent(rapidjson::Value const& value, unsigned short indent = 2) {
+    rapidjson::StringBuffer buffer;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    writer.SetIndent(' ', indent);
+    value.Accept(writer);
+    return buffer.GetString();
   }
 };
 

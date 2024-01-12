@@ -22,6 +22,7 @@ class ServerSettings {
  private:
   static std::unique_ptr<ServerSettings> instance_;
 
+  ServerSettingsServer server_settings_;
   ServerSettingsLogging logging_settings_;
 
  private:
@@ -29,9 +30,15 @@ class ServerSettings {
 
   [[nodiscard]] static OptionalServerGenericError initialize(rapidjson::Document const& settings_json);
 
+  void initialize_server_settings(rapidjson::Value::ConstObject const& settings_json);
+  void initialize_logging_settings(rapidjson::Value::ConstObject const& settings_json);
+
   friend class ServerSettingsLoader;
 
  public:
+  [[nodiscard]] static auto const& server_settings() {
+    return instance_->server_settings_;
+  }
   [[nodiscard]] static auto const& logging_settings() {
     return instance_->logging_settings_;
   }

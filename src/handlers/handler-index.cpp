@@ -10,11 +10,6 @@
 
 #include <httplib/httplib.h>
 
-#include <memory>
-#include <optional>
-
-#include "watch-list-server/dev-utils.hpp"
-
 namespace watch_list_app::server {
 
 HandlerIndex::HandlerIndex() : HandlerBase("HandlerIndex") {}
@@ -24,7 +19,8 @@ OptionalServerGenericError HandlerIndex::register_endpoints(httplib::Server* ser
 }
 
 OptionalHandlerError HandlerIndex::handle_get(httplib::Request const& req, httplib::Response& res) {
-  LOG_NOT_IMPLEMENTED();
+  res.set_content("Potato!", "text/plain");
+  res.status = httplib::StatusCode::OK_200;
   return std::nullopt;
 }
 
