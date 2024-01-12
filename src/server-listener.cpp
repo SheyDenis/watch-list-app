@@ -78,7 +78,7 @@ OptionalServerGenericError ServerListener::run() {
   logger_.info("Start listening on [{}:{}]", server_address, server_port);
 
   if (!server_->listen(server_address, server_port)) {
-    return ServerGenericError(fmt::format("Failed to start listening on [{}:{}]", server_address, server_port), errno);
+    return ServerGenericError(fmt::format("Failed to start listening on [{}:{}]", server_address, server_port), std::nullopt, errno);
   }
 
   return std::nullopt;

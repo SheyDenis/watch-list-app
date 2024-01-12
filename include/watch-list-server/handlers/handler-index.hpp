@@ -11,13 +11,10 @@
 
 #include <httplib/httplib.h>
 
-#include <memory>
-#include <set>
-#include <string>
-
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
+#include "watch-list-server/server-generic-error.hpp"
 
 namespace watch_list_app::server {
 

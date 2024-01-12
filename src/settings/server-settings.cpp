@@ -8,7 +8,11 @@
 
 #include "watch-list-server/settings/server-settings.hpp"
 
+#include <fmt/core.h>
 #include <spdlog/common.h>
+
+#include <cstring>
+#include <optional>
 
 namespace watch_list_app::server::settings {
 

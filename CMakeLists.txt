@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
 
 PROJECT(WatchListApp VERSION 0.0.1 LANGUAGES CXX)
 
+OPTION(IS_DEV "If enabled, disables some compile-time errors that make development difficult." OFF)
+
 INCLUDE(GNUInstallDirs)
 
 SET(EXEC_NAME ${PROJECT_NAME})

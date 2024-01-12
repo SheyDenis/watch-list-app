@@ -15,6 +15,7 @@
 #include <variant>
 
 #include "watch-list-server/dev-utils.hpp"
+#include "watch-list-server/formatter-utils.hpp"
 #include "watch-list-server/json/json-utils.hpp"
 #include "watch-list-server/settings/server-settings.hpp"
 
@@ -40,7 +41,7 @@ OptionalServerGenericError ServerSettingsLoader::load_settings(std::string const
 OptionalServerGenericError ServerSettingsLoader::validate_settings(rapidjson::Document const& settings_json) {
   LOG_NOT_IMPLEMENTED();
   if (!settings_json.IsObject()) {
-    return ServerGenericError(fmt::format("Invalid settings JSON [{}]"), settings_json.GetType());
+    return ServerGenericError(fmt::format("Invalid settings JSON [{}]", settings_json.GetType()));
   }
   return std::nullopt;
 }

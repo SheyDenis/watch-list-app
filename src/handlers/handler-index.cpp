@@ -8,6 +8,9 @@
 
 #include "watch-list-server/handlers/handler-index.hpp"
 
+#include <httplib/httplib.h>
+
+#include <memory>
 #include <optional>
 
 #include "watch-list-server/dev-utils.hpp"

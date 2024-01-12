@@ -17,50 +17,48 @@
 #include <variant>
 
 #include "watch-list-server/server-constants.hpp"
+#include "watch-list-server/server-error.hpp"
 
 namespace watch_list_app::server {
 
-class ServerGenericError {
- private:
-  std::string error_;
-  std::optional<std::string> ex_;
-  std::optional<int> os_error_;
+struct ServerGenericError {
+  /// @brief A generic error type used to convey general runtime error has occurred.
 
- public:
-  ServerGenericError(std::string error, std::optional<std::reference_wrapper<std::exception const>> ex, std::optional<int> os_error)
-      : error_(std::move(error)), ex_(std::nullopt), os_error_(os_error) {
-    if (ex.has_value()) {
-      ex_ = ex->get().what();
-    }
-  }
-  explicit ServerGenericError(std::string error) : ServerGenericError(std::move(error), std::nullopt, std::nullopt) {}
-  ServerGenericError(std::string error, std::exception const& ex) : ServerGenericError(std::move(error), ex, std::nullopt) {}
-  ServerGenericError(std::string error, int os_error) : ServerGenericError(std::move(error), std::nullopt, os_error) {}
+  std::string const error;
+  std::optional<std::string> const ex = std::nullopt;
+  std::optional<int> const os_error = std::nullopt;
 
-  explicit operator std::string() const {
-    if (ServerConstants::include_debug_data()) {
-      std::string os_error_str = "0";
-
-      if (os_error_.has_value()) {
-        os_error_str = fmt::format("{} {}", *os_error_, strerror(*os_error_));
-      }
-
-      return fmt::format(FMT_STRING("{} [ex={}][os_error={}]"), error_, ex_.has_value() ? *ex_ : "N/A", os_error_str);
-    }
-    return error_;
-  }
+  explicit ServerGenericError(std::string _error,
+                              std::optional<std::string> _ex = std::nullopt,
+                              std::optional<int> _os_error = std::nullopt)
+      : error(std::move(_error)), ex(std::move(_ex)), os_error(_os_error) {}
 };
-
 typedef std::optional<ServerGenericError> OptionalServerGenericError;
 template <typename V>
 using ServerGenericErrorVariant = std::variant<ServerGenericError, V>;
+
+template <>
+struct ErrorFormatter<ServerGenericError> {
+  static std::string to_string(ServerGenericError const& err) {
+    if (ServerConstants::include_debug_data()) {
+      std::string os_error_str = "N/A";
+
+      if (err.os_error.has_value()) {
+        os_error_str = fmt::format("{} {}", *err.os_error, strerror(*err.os_error));
+      }
+
+      return fmt::format(FMT_STRING("{} [ex={}][os_error={}]"), err.error, err.ex.has_value() ? *err.ex : "N/A", os_error_str);
+    }
+    return err.error;
+  }
+};
 
 }  // namespace watch_list_app::server
 
 template <>
 struct fmt::formatter<watch_list_app::server::ServerGenericError> : fmt::formatter<std::string> {
-  auto format(watch_list_app::server::ServerGenericError v, format_context& ctx) const -> decltype(ctx.out()) {
-    return format_to(ctx.out(), std::string(v));
+  auto format(watch_list_app::server::ServerGenericError const& v, format_context& ctx) const -> decltype(ctx.out()) {
+    return format_to(ctx.out(), watch_list_app::server::format_error(v));
   }
 };
 

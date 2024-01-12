@@ -8,16 +8,15 @@
 
 #include "watch-list-server/handlers/handler-base.hpp"
 
-#include "watch-list-server/http-utils.hpp"
-
+#include <httplib/httplib.h>
 namespace watch_list_app::server {
 
-HandlerBase::HandlerBase(std::string const& handler_name) : logger_(handler_name) {}
+HandlerBase::HandlerBase(std::string const& handler_name) : logger_(handler_name), handler_name_(handler_name) {}
 
 HandlerError HandlerBase::missing_handler(HTTPMethod method, [[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
   res.set_content("Something went wrong!", "text/plain");
   res.status = httplib::StatusCode::InternalServerError_500;
-  return HandlerError(method);
+  return {method, handler_name_, {500, req.params}, "Handler was registered and called but not implemented"};
 }
 
 OptionalHandlerError HandlerBase::handle_delete(httplib::Request const& req, httplib::Response& res) {

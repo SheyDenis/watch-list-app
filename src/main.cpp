@@ -14,7 +14,9 @@
 #include <string>
 
 #include "watch-list-server/dev-utils.hpp"
+#include "watch-list-server/formatter-utils.hpp"
 #include "watch-list-server/server-constants.hpp"
+#include "watch-list-server/server-error.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 #include "watch-list-server/server-listener.hpp"
 #include "watch-list-server/server-logger.hpp"

@@ -11,24 +11,25 @@
 
 #include <httplib/httplib.h>
 
-#include <cstdint>
 #include <optional>
 #include <string>
 
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
+#include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 #include "watch-list-server/server-logger.hpp"
 
 namespace watch_list_app::server {
 
-enum class HTTPMethod : std::uint8_t;
-
 class HandlerBase {
  protected:
   ServerLogger logger_;
+  std::string const handler_name_;
 
  private:
+  /// @brief A fallback handler for registered endpoints that don't have a handler.
+  ///  This shouldn't be called and indicates a bug if it does.
   HandlerError missing_handler(HTTPMethod method, httplib::Request const& req, httplib::Response& res);
 
  protected:
