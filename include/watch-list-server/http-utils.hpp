@@ -9,9 +9,7 @@
 #ifndef HTTP_UTILS_HPP_
 #define HTTP_UTILS_HPP_
 
-#include <stddef.h>
-
-#include <cstdlib>
+#include <cstdint>
 #include <string_view>
 
 namespace watch_list_app::server {

@@ -10,9 +10,7 @@
 #define SERVER_SETTINGS_LOADER_HPP_
 
 #include <rapidjson/document.h>
-#include <spdlog/common.h>
 
-#include <memory>
 #include <string>
 
 #include "watch-list-server/server-generic-error.hpp"

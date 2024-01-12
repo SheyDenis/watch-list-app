@@ -6,15 +6,20 @@
  *
  */
 
+#include <fmt/core.h>
+#include <spdlog/common.h>
 #include <spdlog/spdlog.h>
 
+#include <optional>
 #include <string>
 
 #include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/server-constants.hpp"
+#include "watch-list-server/server-generic-error.hpp"
 #include "watch-list-server/server-listener.hpp"
 #include "watch-list-server/server-logger.hpp"
 #include "watch-list-server/settings/server-settings-loader.hpp"
+#include "watch-list-server/settings/server-settings-models.hpp"
 #include "watch-list-server/settings/server-settings.hpp"
 
 void show_help() {

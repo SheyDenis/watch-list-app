@@ -9,10 +9,12 @@
 #ifndef SERVER_LOGGER_HPP_
 #define SERVER_LOGGER_HPP_
 
+#include <spdlog/common.h>
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
+#include <memory>
 #include <string>
 
 namespace watch_list_app::server {

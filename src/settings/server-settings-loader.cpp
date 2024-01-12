@@ -8,8 +8,11 @@
 
 #include "watch-list-server/settings/server-settings-loader.hpp"
 
-#include <fmt/format.h>
-#include <rapidjson/reader.h>
+#include <fmt/core.h>
+
+#include <memory>
+#include <optional>
+#include <variant>
 
 #include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/json/json-utils.hpp"
@@ -24,7 +27,7 @@ OptionalServerGenericError ServerSettingsLoader::load_settings(std::string const
 
   auto res = json::JSONUtils::read_file(settings_file);
   if (std::holds_alternative<ServerGenericError>(res)) {
-    return std::move(std::get<ServerGenericError>(res));
+    return std::get<ServerGenericError>(res);
   }
 
   if (auto err = validate_settings(std::get<rapidjson::Document>(res))) {

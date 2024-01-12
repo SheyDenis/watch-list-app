@@ -26,7 +26,7 @@ class HandlerError {
   HTTPMethod const method_;
 
  public:
-  HandlerError(HTTPMethod method) : method_(method) {}
+  explicit HandlerError(HTTPMethod method) : method_(method) {}
 
   explicit operator std::string() const {
     LOG_NOT_IMPLEMENTED();

@@ -7,7 +7,7 @@ MACRO(INCLUDE_WHAT_YOU_USE __target)
             SET(IWYU_ERR 1)
         ENDIF (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-        SET(IWYU_PATH_AND_OPTIONS ${IWYU_PATH} -Xiwyu --error=${IWYU_ERR})
+        SET(IWYU_PATH_AND_OPTIONS ${IWYU_PATH} -Xiwyu --error=${IWYU_ERR} -Xiwyu -Wno-all)
         UNSET(IWYU_ERR)
     ENDIF ()
 

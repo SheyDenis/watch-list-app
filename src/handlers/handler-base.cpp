@@ -8,15 +8,13 @@
 
 #include "watch-list-server/handlers/handler-base.hpp"
 
-#include <utility>
-
-#include "watch-list-server/dev-utils.hpp"
+#include "watch-list-server/http-utils.hpp"
 
 namespace watch_list_app::server {
 
-HandlerBase::HandlerBase(std::string handler_name) : logger_(std::move(handler_name)) {}
+HandlerBase::HandlerBase(std::string const& handler_name) : logger_(handler_name) {}
 
-HandlerError HandlerBase::missing_handler(HTTPMethod method, httplib::Request const& req, httplib::Response& res) {
+HandlerError HandlerBase::missing_handler(HTTPMethod method, [[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
   res.set_content("Something went wrong!", "text/plain");
   res.status = httplib::StatusCode::InternalServerError_500;
   return HandlerError(method);

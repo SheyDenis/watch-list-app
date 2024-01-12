@@ -8,6 +8,13 @@
 
 #include "watch-list-server/server-listener.hpp"
 
+#include <fmt/core.h>
+#include <httplib.h>
+
+#include <cerrno>
+#include <optional>
+#include <string>
+
 #include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-index.hpp"

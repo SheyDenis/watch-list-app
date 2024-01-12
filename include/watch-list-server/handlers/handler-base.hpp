@@ -11,16 +11,18 @@
 
 #include <httplib/httplib.h>
 
-#include <set>
+#include <cstdint>
+#include <optional>
 #include <string>
 
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
-#include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 #include "watch-list-server/server-logger.hpp"
 
 namespace watch_list_app::server {
+
+enum class HTTPMethod : std::uint8_t;
 
 class HandlerBase {
  protected:
@@ -30,7 +32,7 @@ class HandlerBase {
   HandlerError missing_handler(HTTPMethod method, httplib::Request const& req, httplib::Response& res);
 
  protected:
-  explicit HandlerBase(std::string handler_name);
+  explicit HandlerBase(std::string const& handler_name);
 
   template <typename Derived>
   [[nodiscard]] OptionalServerGenericError register_endpoints_internal(httplib::Server* server) {
