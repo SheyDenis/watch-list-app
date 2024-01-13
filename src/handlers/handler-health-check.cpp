@@ -8,10 +8,16 @@
 
 #include "watch-list-server/handlers/handler-health-check.hpp"
 
+#include <bits/chrono.h>
 #include <httplib/httplib.h>
+#include <rapidjson/allocators.h>
 #include <rapidjson/document.h>
+#include <rapidjson/encodings.h>
+#include <rapidjson/rapidjson.h>
 
-#include <chrono>
+#include <functional>
+#include <optional>
+#include <vector>
 
 #include "watch-list-server/json/json-utils.hpp"
 

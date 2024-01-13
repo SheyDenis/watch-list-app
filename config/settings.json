@@ -3,6 +3,10 @@
     "server_address": "localhost",
     "server_port": 8000
   },
+  "httplib": {
+    "thread_pool_size": 1,
+    "keep_alive_max_count": 1
+  },
   "logging": {
     "level": "debug"
   }

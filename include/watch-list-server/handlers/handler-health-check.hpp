@@ -11,8 +11,6 @@
 
 #include <httplib/httplib.h>
 
-#include <optional>
-
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"

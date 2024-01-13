@@ -16,8 +16,8 @@ std::vector<std::reference_wrapper<HandlerBase const>> HandlerBase::registered_h
 
 HandlerBase::HandlerBase(std::string const& handler_name) : logger_(handler_name), handler_name_(handler_name) {}
 
-HandlerError HandlerBase::missing_handler(HTTPMethod method, [[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
-  res.set_content("Something went wrong!", "text/plain");
+HandlerError HandlerBase::missing_handler(HTTPMethod method, httplib::Request const& req, httplib::Response& res) {
+  res.set_content("Something went wrong!", "text/plain");  // TODO - Call the error / exception handler.
   res.status = httplib::StatusCode::InternalServerError_500;
   return {method, handler_name_, {500, req.params}, "Handler was registered and called but not implemented"};
 }

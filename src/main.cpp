@@ -14,7 +14,6 @@
 #include <string>
 
 #include "watch-list-server/dev-utils.hpp"
-#include "watch-list-server/formatter-utils.hpp"
 #include "watch-list-server/server-constants.hpp"
 #include "watch-list-server/server-error.hpp"
 #include "watch-list-server/server-generic-error.hpp"
@@ -53,28 +52,29 @@ watch_list_app::server::OptionalServerGenericError register_event_handlers() {
 int main(int argc, char* argv[]) {
   configure_logger();
 
+  auto& logger = watch_list_app::server::ServerConstants::root_logger();
   std::string settings_file_path;
   if (!settings_path(argc, argv, settings_file_path)) {
     show_help();
     return -1;
   }
   if (auto const err = watch_list_app::server::settings::ServerSettingsLoader::load_settings(settings_file_path)) {
-    spdlog::error("Failed to load settings [{}]", *err);
+    logger.error("Failed to load settings [{}]", watch_list_app::server::format_error(err));
     return -1;
   }
   configure_logger(watch_list_app::server::settings::ServerSettings::logging_settings().logger_level);
 
   watch_list_app::server::ServerListener listener;
   if (auto const err = register_event_handlers()) {
-    spdlog::error("Failed to register event handlers [{}]", *err);
+    logger.error("Failed to register event handlers [{}]", watch_list_app::server::format_error(err));
     return -1;
   }
   if (auto const err = listener.initialize()) {
-    spdlog::error("Failed to initialize server [{}]", *err);
+    logger.error("Failed to initialize server [{}]", watch_list_app::server::format_error(err));
     return -1;
   }
   if (auto const err = listener.run()) {
-    spdlog::error("Failed to run server [{}]", *err);
+    logger.error("Failed to run server [{}]", watch_list_app::server::format_error(err));
     return -1;
   }
 

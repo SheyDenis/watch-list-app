@@ -9,9 +9,9 @@
 #include "watch-list-server/settings/server-settings.hpp"
 
 #include <fmt/core.h>
+#include <rapidjson/allocators.h>
 #include <spdlog/common.h>
 
-#include <cstring>
 #include <optional>
 
 namespace watch_list_app::server::settings {
@@ -34,6 +34,9 @@ ServerSettings::ServerSettings(rapidjson::Document const& settings_json) {
   if (settings_json.HasMember("server")) {
     initialize_server_settings(settings_json["server"].GetObject());
   }
+  if (settings_json.HasMember("httplib")) {
+    initialize_httplib_settings(settings_json["httplib"].GetObject());
+  }
 }
 
 void ServerSettings::initialize_server_settings(rapidjson::Value::ConstObject const& settings_json) {
@@ -42,6 +45,33 @@ void ServerSettings::initialize_server_settings(rapidjson::Value::ConstObject co
   }
   if (settings_json.HasMember("server_port")) {
     server_settings_.server_port = settings_json["server_port"].GetInt();
+  }
+}
+
+void ServerSettings::initialize_httplib_settings(rapidjson::Value::ConstObject const& settings_json) {
+  if (settings_json.HasMember("thread_pool_size")) {
+    httplib_settings_.thread_pool_size = settings_json["thread_pool_size"].GetInt();
+  }
+  if (settings_json.HasMember("keep_alive_max_count")) {
+    httplib_settings_.keep_alive_max_count = settings_json["keep_alive_max_count"].GetInt64();
+  }
+  if (settings_json.HasMember("keep_alive_timeout_sec")) {
+    httplib_settings_.keep_alive_timeout_sec = settings_json["keep_alive_timeout_sec"].GetInt64();
+  }
+  if (settings_json.HasMember("read_timeout_sec")) {
+    httplib_settings_.read_timeout_sec = settings_json["read_timeout_sec"].GetInt64();
+  }
+  if (settings_json.HasMember("read_timeout_usec")) {
+    httplib_settings_.read_timeout_usec = settings_json["read_timeout_usec"].GetInt64();
+  }
+  if (settings_json.HasMember("write_timeout_sec")) {
+    httplib_settings_.write_timeout_sec = settings_json["write_timeout_sec"].GetInt64();
+  }
+  if (settings_json.HasMember("write_timeout_usec")) {
+    httplib_settings_.write_timeout_usec = settings_json["write_timeout_usec"].GetInt64();
+  }
+  if (settings_json.HasMember("idle_interval_sec")) {
+    httplib_settings_.idle_interval_sec = settings_json["idle_interval_sec"].GetInt64();
   }
 }
 

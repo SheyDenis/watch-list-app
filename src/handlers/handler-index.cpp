@@ -10,6 +10,9 @@
 
 #include <httplib/httplib.h>
 
+#include <memory>
+#include <optional>
+
 namespace watch_list_app::server {
 
 HandlerIndex::HandlerIndex() : HandlerBase("HandlerIndex") {}

@@ -9,7 +9,7 @@
 #ifndef SERVER_GENERIC_ERROR_HPP_
 #define SERVER_GENERIC_ERROR_HPP_
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 #include <optional>
 #include <string>
@@ -17,7 +17,6 @@
 #include <variant>
 
 #include "watch-list-server/server-constants.hpp"
-#include "watch-list-server/server-error.hpp"
 
 namespace watch_list_app::server {
 
@@ -37,29 +36,19 @@ typedef std::optional<ServerGenericError> OptionalServerGenericError;
 template <typename V>
 using ServerGenericErrorVariant = std::variant<ServerGenericError, V>;
 
-template <>
-struct ErrorFormatter<ServerGenericError> {
-  static std::string to_string(ServerGenericError const& err) {
-    if (ServerConstants::include_debug_data()) {
-      std::string os_error_str = "N/A";
+static std::string to_string(ServerGenericError const& err) {
+  if (ServerConstants::include_debug_data()) {
+    std::string os_error_str = "N/A";
 
-      if (err.os_error.has_value()) {
-        os_error_str = fmt::format("{} {}", *err.os_error, strerror(*err.os_error));
-      }
-
-      return fmt::format(FMT_STRING("{} [ex={}][os_error={}]"), err.error, err.ex.has_value() ? *err.ex : "N/A", os_error_str);
+    if (err.os_error.has_value()) {
+      os_error_str = fmt::format("{} {}", *err.os_error, strerror(*err.os_error));
     }
-    return err.error;
+
+    return fmt::format(FMT_STRING("{} [ex={}][os_error={}]"), err.error, err.ex.has_value() ? *err.ex : "N/A", os_error_str);
   }
-};
+  return err.error;
+}
 
 }  // namespace watch_list_app::server
-
-template <>
-struct fmt::formatter<watch_list_app::server::ServerGenericError> : fmt::formatter<std::string> {
-  auto format(watch_list_app::server::ServerGenericError const& v, format_context& ctx) const -> decltype(ctx.out()) {
-    return format_to(ctx.out(), watch_list_app::server::format_error(v));
-  }
-};
 
 #endif  // SERVER_GENERIC_ERROR_HPP_

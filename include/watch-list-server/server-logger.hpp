@@ -20,11 +20,9 @@
 namespace watch_list_app::server {
 
 class ServerLogger : public spdlog::logger {
- private:
-  static spdlog::level::level_enum default_level_;
-
  public:
-  explicit ServerLogger(std::string const& name) : spdlog::logger(*spdlog::stderr_color_mt(name)) {}
+  explicit ServerLogger(std::string const& name)
+      : spdlog::logger(spdlog::get(name) != nullptr ? *spdlog::get(name) : *spdlog::stderr_color_mt(name)) {}
 
   static void configure_logger(std::string const& root_logger_name, spdlog::level::level_enum level) {
     if (spdlog::get(root_logger_name) == nullptr) {

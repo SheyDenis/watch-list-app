@@ -9,18 +9,16 @@
 #ifndef HANDLER_ERROR_HPP_
 #define HANDLER_ERROR_HPP_
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 #include <httplib/httplib.h>
 #include <spdlog/formatter.h>
 
 #include <optional>
 #include <string>
 
-#include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/formatter-utils.hpp"
 #include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-constants.hpp"
-#include "watch-list-server/server-error.hpp"
 
 namespace watch_list_app::server {
 
@@ -56,34 +54,20 @@ struct HandlerError {
 };
 typedef std::optional<HandlerError> OptionalHandlerError;
 
-template <>
-struct ErrorFormatter<HandlerError::RequestInfo> {
-  static std::string to_string(HandlerError::RequestInfo const& err) {
-    return fmt::format(FMT_STRING("[return_code={:d}][url_parameters={:s}]"), err.return_code, err.url_parameters);
-  }
-};
+static std::string to_string(HandlerError::RequestInfo const& err) {
+  return fmt::format(FMT_STRING("[return_code={:d}][url_parameters={:s}]"), err.return_code, err.url_parameters);
+}
 
-template <>
-struct ErrorFormatter<HandlerError> {
-  static std::string to_string(HandlerError const& err) {
-    std::string error_msg(fmt::format(
-        FMT_STRING("Handler [{}] failed [{}] request [error={}]"), err.handler_name, http_method_to_string(err.method), err.error));
-    if (ServerConstants::include_debug_data()) {
-      error_msg.append(fmt::format(FMT_STRING("[ex={}][request_info={}]"),
-                                   err.ex.has_value() ? *err.ex : "N/A",
-                                   watch_list_app::server::format_error(err.request_info)));
-    }
-    return error_msg;
+static std::string to_string(HandlerError const& err) {
+  std::string error_msg(fmt::format(
+      FMT_STRING("Handler [{}] failed [{}] request [error={}]"), err.handler_name, http_method_to_string(err.method), err.error));
+  if (ServerConstants::include_debug_data()) {
+    error_msg.append(
+        fmt::format(FMT_STRING("[ex={}][request_info={}]"), err.ex.has_value() ? *err.ex : "N/A", to_string(err.request_info)));
   }
-};
+  return error_msg;
+}
 
 }  // namespace watch_list_app::server
-
-template <>
-struct fmt::formatter<watch_list_app::server::HandlerError> : fmt::formatter<std::string> {
-  auto format(watch_list_app::server::HandlerError const& v, format_context& ctx) const -> decltype(ctx.out()) {
-    return format_to(ctx.out(), watch_list_app::server::format_error(v));
-  }
-};
 
 #endif  // HANDLER_ERROR_HPP_

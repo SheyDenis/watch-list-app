@@ -9,19 +9,25 @@
 #ifndef SERVER_ERROR_HPP_
 #define SERVER_ERROR_HPP_
 
+#include <fmt/core.h>
+
+#include <optional>
+#include <stdexcept>
 #include <string>
 
 namespace watch_list_app::server {
 
-template <class T>
-struct ErrorFormatter {
-  static_assert(false, "Do not use base template");
-  static std::string to_string(T const& err);
-};
-
-template <class T>
+template <typename T>
 std::string format_error(T const& err) {
-  return ErrorFormatter<T>::to_string(err);
+  return to_string(err);
+}
+
+template <typename T>
+std::string format_error(std::optional<T> const& err) {
+  if (!err.has_value()) {
+    throw std::runtime_error(fmt::format("Called [{}] with [std::nullopt] value", __PRETTY_FUNCTION__));
+  }
+  return format_error<T>(*err);
 }
 
 }  // namespace watch_list_app::server

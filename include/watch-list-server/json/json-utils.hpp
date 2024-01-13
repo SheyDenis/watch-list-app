@@ -50,7 +50,8 @@ class JSONUtils {
     return doc;
   }
 
-  [[nodiscard]] static std::string dump(rapidjson::Value const& value, unsigned short indent = 0) {
+  template <typename T, typename E>
+  [[nodiscard]] static std::string dump(rapidjson::GenericValue<T, E> const& value, unsigned short indent = 0) {
     if (indent > 0) {
       return dump_indent(value, indent);
     }
@@ -60,7 +61,8 @@ class JSONUtils {
     return buffer.GetString();
   }
 
-  [[nodiscard]] static std::string dump_indent(rapidjson::Value const& value, unsigned short indent = 2) {
+  template <typename T, typename E>
+  [[nodiscard]] static std::string dump_indent(rapidjson::GenericValue<T, E> const& value, unsigned short indent = 2) {
     rapidjson::StringBuffer buffer;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
     writer.SetIndent(' ', indent);

@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "watch-list-server/handlers/handler-error.hpp"
+#include "watch-list-server/handlers/handler-timer.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
 #include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-generic-error.hpp"
@@ -53,7 +54,7 @@ class HandlerBase {
 
  private:
   /// @brief A fallback handler for registered endpoints that don't have a handler.
-  ///  This shouldn't be called and indicates a bug if it does.
+  ///  This shouldn't be called and indicates a bug if it is.
   HandlerError missing_handler(HTTPMethod method, httplib::Request const& req, httplib::Response& res);
 
  protected:
@@ -67,6 +68,7 @@ class HandlerBase {
   [[nodiscard]] OptionalServerGenericError register_endpoints_internal(httplib::Server* server) {
     if (HandlerTraits<Derived>::handle_delete) {
       server->Delete(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        HandlerTimer timer(handler_name_, HTTPMethod::HTTP_DELETE);
         ++call_metrics_.call_delete_;
         if (auto const err = handle_delete(req, res)) {
           if (err->request_info.return_code >= 500) {
@@ -74,13 +76,14 @@ class HandlerBase {
           } else {
             ++call_metrics_.error_4xx_delete_;
           }
-          logger_.error("Failed to handle [DELETE] request [{}]", *err);
+          logger_.error("Failed to handle [DELETE] request [{}]", format_error(err));
         }
       });
     }
 
     if (HandlerTraits<Derived>::handle_get) {
       server->Get(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        HandlerTimer timer(handler_name_, HTTPMethod::HTTP_GET);
         ++call_metrics_.call_get_;
         if (auto const err = handle_get(req, res)) {
           if (err->request_info.return_code >= 500) {
@@ -88,13 +91,14 @@ class HandlerBase {
           } else {
             ++call_metrics_.error_4xx_get_;
           }
-          logger_.error("Failed to handle [GET] request [{}]", *err);
+          logger_.error("Failed to handle [GET] request [{}]", format_error(err));
         }
       });
     }
 
     if (HandlerTraits<Derived>::handle_patch) {
       server->Patch(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        HandlerTimer timer(handler_name_, HTTPMethod::HTTP_PATCH);
         ++call_metrics_.call_patch_;
         if (auto const err = handle_patch(req, res)) {
           if (err->request_info.return_code >= 500) {
@@ -102,13 +106,14 @@ class HandlerBase {
           } else {
             ++call_metrics_.error_4xx_patch_;
           }
-          logger_.error("Failed to handle [PATCH] request [{}]", *err);
+          logger_.error("Failed to handle [PATCH] request [{}]", format_error(err));
         }
       });
     }
 
     if (HandlerTraits<Derived>::handle_post) {
       server->Post(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        HandlerTimer timer(handler_name_, HTTPMethod::HTTP_POST);
         ++call_metrics_.call_post_;
         if (auto const err = handle_post(req, res)) {
           if (err->request_info.return_code >= 500) {
@@ -116,13 +121,14 @@ class HandlerBase {
           } else {
             ++call_metrics_.error_4xx_post_;
           }
-          logger_.error("Failed to handle [POST] request [{}]", *err);
+          logger_.error("Failed to handle [POST] request [{}]", format_error(err));
         }
       });
     }
 
     if (HandlerTraits<Derived>::handle_put) {
       server->Put(HandlerTraits<Derived>::resource_pattern, [&](httplib::Request const& req, httplib::Response& res) -> void {
+        HandlerTimer timer(handler_name_, HTTPMethod::HTTP_PUT);
         ++call_metrics_.call_put_;
         if (auto const err = handle_put(req, res)) {
           if (err->request_info.return_code >= 500) {
@@ -130,7 +136,7 @@ class HandlerBase {
           } else {
             ++call_metrics_.error_4xx_put_;
           }
-          logger_.error("Failed to handle [PUT] request [{}]", *err);
+          logger_.error("Failed to handle [PUT] request [{}]", format_error(err));
         }
       });
     }

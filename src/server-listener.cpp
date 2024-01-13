@@ -15,11 +15,12 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <vector>
 
-#include "watch-list-server/dev-utils.hpp"
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-health-check.hpp"
 #include "watch-list-server/handlers/handler-index.hpp"
+#include "watch-list-server/settings/server-settings-models.hpp"
 #include "watch-list-server/settings/server-settings.hpp"
 
 namespace watch_list_app::server {
@@ -27,8 +28,7 @@ namespace watch_list_app::server {
 ServerListener::ServerListener() : logger_("ServerListener") {}
 
 OptionalServerGenericError ServerListener::initialize() {
-  LOG_NOT_IMPLEMENTED();
-
+  auto const& httplib_settings = settings::ServerSettings::httplib_settings();
   server_ = std::make_unique<httplib::Server>();
 
   //   server_.set_logger([]( auto const& req, auto  const& res) {
@@ -56,14 +56,16 @@ OptionalServerGenericError ServerListener::initialize() {
   //  res.status = StatusCode::InternalServerError_500;
   //});
 
-  // server_->set_keep_alive_max_count(0);
-  // server_->set_keep_alive_timeout(0);
-  //
-  // server_->set_read_timeout(5, 0);
-  // server_->set_write_timeout(5, 0);
-  // server_->set_idle_interval(0, 100000); // 100 milliseconds
-  //
-  // server_->new_task_queue = []()->httplib::ThreadPool* { return new httplib::ThreadPool(5); };  // TODO - Get from settings.
+  server_->set_keep_alive_max_count(httplib_settings.keep_alive_max_count);
+  server_->set_keep_alive_timeout(httplib_settings.keep_alive_timeout_sec);
+
+  server_->set_read_timeout(httplib_settings.read_timeout_sec, httplib_settings.read_timeout_usec);
+  server_->set_write_timeout(httplib_settings.write_timeout_sec, httplib_settings.write_timeout_usec);
+  server_->set_idle_interval(httplib_settings.idle_interval_sec, httplib_settings.idle_interval_usec);
+  server_->set_payload_max_length(httplib_settings.payload_max_length);
+
+  auto thread_pool_size = httplib_settings.thread_pool_size;
+  server_->new_task_queue = [thread_pool_size]() -> httplib::ThreadPool* { return new httplib::ThreadPool(thread_pool_size); };
 
   std::vector<std::reference_wrapper<HandlerBase>> handlers{
       HandlerInstance<HandlerHealthCheck>::instance(),
