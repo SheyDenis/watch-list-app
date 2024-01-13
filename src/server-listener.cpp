@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "watch-list-server/handlers/handler-base.hpp"
+#include "watch-list-server/handlers/handler-exception.hpp"
 #include "watch-list-server/handlers/handler-health-check.hpp"
 #include "watch-list-server/handlers/handler-index.hpp"
 #include "watch-list-server/settings/server-settings-models.hpp"
@@ -32,30 +33,12 @@ OptionalServerGenericError ServerListener::initialize() {
   auto const& httplib_settings = settings::ServerSettings::httplib_settings();
   server_ = std::make_unique<httplib::Server>();
 
-  //   server_.set_logger([]( auto const& req, auto  const& res) {
-  //  your_logger(req, res);
-  //});
-
-  //   svr.set_error_handler([](const auto& req, auto& res) {
-  //  auto fmt = "<p>Error Status: <span style='color:red;'>%d</span></p>";
-  //  char buf[BUFSIZ];
-  //  snprintf(buf, sizeof(buf), fmt, res.status);
-  //  res.set_content(buf, "text/html");
-  //});
-
-  //   svr.set_exception_handler([](const auto& req, auto& res, std::exception_ptr ep) {
-  //  auto fmt = "<h1>Error 500</h1><p>%s</p>";
-  //  char buf[BUFSIZ];
-  //  try {
-  //    std::rethrow_exception(ep);
-  //  } catch (std::exception &e) {
-  //    snprintf(buf, sizeof(buf), fmt, e.what());
-  //  } catch (...) { // See the following NOTE
-  //    snprintf(buf, sizeof(buf), fmt, "Unknown Exception");
-  //  }
-  //  res.set_content(buf, "text/html");
-  //  res.status = StatusCode::InternalServerError_500;
-  //});
+  if (settings::ServerSettings::server_settings().log_requests) {
+    server_->set_logger([](httplib::Request const& req, [[maybe_unused]] httplib::Response const& res) {
+      ServerLogger request_logger("RequestLogger");
+      request_logger.info("Received [{}] request from [{}] to [{}]", req.method, req.remote_addr, req.target);
+    });
+  }
 
   server_->set_keep_alive_max_count(httplib_settings.keep_alive_max_count);
   server_->set_keep_alive_timeout(httplib_settings.keep_alive_timeout_sec);
@@ -69,6 +52,7 @@ OptionalServerGenericError ServerListener::initialize() {
   server_->new_task_queue = [thread_pool_size]() -> httplib::ThreadPool* { return new httplib::ThreadPool(thread_pool_size); };
 
   std::vector<std::reference_wrapper<HandlerBase>> handlers{
+      HandlerInstance<HandlerException>::instance(),
       HandlerInstance<HandlerHealthCheck>::instance(),
       HandlerInstance<HandlerIndex>::instance(),
   };

@@ -46,6 +46,9 @@ void ServerSettings::initialize_server_settings(rapidjson::Value::ConstObject co
   if (settings_json.HasMember("server_port")) {
     server_settings_.server_port = settings_json["server_port"].GetInt();
   }
+  if (settings_json.HasMember("log_requests")) {
+    server_settings_.log_requests = settings_json["log_requests"].GetBool();
+  }
 }
 
 void ServerSettings::initialize_httplib_settings(rapidjson::Value::ConstObject const& settings_json) {

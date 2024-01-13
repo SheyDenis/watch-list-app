@@ -21,6 +21,7 @@ struct ServerSettingsBase {};
 struct ServerSettingsServer : public ServerSettingsBase {
   std::string server_address = "localhost";
   int server_port = 8000;
+  bool log_requests = false;
 };
 
 struct ServerSettingsHTTPLib : public ServerSettingsBase {

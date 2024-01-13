@@ -15,6 +15,9 @@
         },
         "server_address": {
           "type": "string"
+        },
+        "log_requests": {
+          "type": "boolean"
         }
       }
     },
