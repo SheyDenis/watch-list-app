@@ -8,7 +8,7 @@
 
 #include <fmt/core.h>
 #include <spdlog/common.h>
-#include <spdlog/spdlog.h>
+#include <spdlog/logger.h>
 
 #include <optional>
 #include <string>

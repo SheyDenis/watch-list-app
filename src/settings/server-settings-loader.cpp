@@ -9,6 +9,10 @@
 #include "watch-list-server/settings/server-settings-loader.hpp"
 
 #include <fmt/core.h>
+#include <rapidjson/allocators.h>
+#include <rapidjson/encodings.h>
+#include <rapidjson/error/en.h>
+#include <rapidjson/rapidjson.h>
 #include <rapidjson/schema.h>
 
 #include <memory>

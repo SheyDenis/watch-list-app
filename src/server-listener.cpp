@@ -12,6 +12,7 @@
 #include <httplib.h>
 
 #include <cerrno>
+#include <cstddef>
 #include <functional>
 #include <optional>
 #include <string>

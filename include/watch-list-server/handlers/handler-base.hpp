@@ -20,6 +20,7 @@
 #include "watch-list-server/handlers/handler-timer.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
 #include "watch-list-server/http-utils.hpp"
+#include "watch-list-server/server-error.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 #include "watch-list-server/server-logger.hpp"
 
