@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WatchListApp Server Settings JSON Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "server": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "server_port": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 65535
+        },
+        "server_address": {
+          "type": "string"
+        },
+        "log_requests": {
+          "type": "boolean"
+        }
+      }
+    },
+    "httplib": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "thread_pool_size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "keep_alive_max_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "keep_alive_timeout_sec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "read_timeout_sec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "read_timeout_usec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "write_timeout_sec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "write_timeout_usec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "idle_interval_sec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "idle_interval_usec": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "payload_max_length": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "err",
+            "critical",
+            "off"
+          ]
+        }
+      }
+    }
+  }
+}

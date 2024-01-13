@@ -1,32 +1,14 @@
-# Prerequisites
-*.d
+# Build
+.build/
+CMakeUserPresets.json
+build/
+cmake-build-*/
+include/watch-list-server/server-settings-schema.hpp
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# IDE
 
-# Precompiled Headers
-*.gch
-*.pch
+# Misc
+!.github/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Python
+.venv/
