@@ -15,16 +15,21 @@ SET(CMAKE_MODULE_PATH
 INCLUDE(cmake-utils)
 INCLUDE(iwyu)
 
+FIND_PACKAGE(RapidJSON REQUIRED)
 FIND_PACKAGE(fmt REQUIRED)
 FIND_PACKAGE(httplib REQUIRED)
 FIND_PACKAGE(spdlog REQUIRED)
-FIND_PACKAGE(RapidJSON REQUIRED)
+FIND_PACKAGE(stduuid REQUIRED)
 
 ADD_EXECUTABLE(${EXEC_NAME}
+               src/dal/database.cpp
                src/handlers/handler-base.cpp
                src/handlers/handler-health-check.cpp
                src/handlers/handler-index.cpp
+               src/handlers/handler-users.cpp
                src/main.cpp
+               src/models/base-model.cpp
+               src/models/user-model.cpp
                src/server-listener.cpp
                src/settings/server-settings-loader.cpp
                src/settings/server-settings.cpp
@@ -46,11 +51,18 @@ TARGET_LINK_LIBRARIES(${EXEC_NAME}
                       httplib::httplib
                       rapidjson
                       spdlog::spdlog
+                      stduuid::stduuid
+                      uuid
 )
 
 TARGET_COMPILE_OPTIONS(${EXEC_NAME}
                        PRIVATE
                        ${DEFAULT_COMPILER_WARNING_FLAGS}
+)
+
+TARGET_COMPILE_DEFINITIONS(${EXEC_NAME}
+                           PUBLIC
+                           UUID_SYSTEM_GENERATOR=ON
 )
 
 ADD_CUSTOM_COMMAND(TARGET ${EXEC_NAME} PRE_BUILD

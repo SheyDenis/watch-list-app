@@ -85,6 +85,15 @@
           ]
         }
       }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "database_path": {
+          "type": "string"
+        }
+      }
     }
   }
 }

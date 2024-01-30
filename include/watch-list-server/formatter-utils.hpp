@@ -15,6 +15,8 @@
 
 #include <string>
 
+#include "watch-list-server/http-utils.hpp"
+
 template <>
 struct fmt::formatter<rapidjson::Type> : fmt::formatter<std::string> {
   auto format(rapidjson::Type const& v, format_context& ctx) const -> decltype(ctx.out()) {
@@ -56,6 +58,13 @@ struct fmt::formatter<httplib::Params> : fmt::formatter<std::string> {
     }
 
     return format_to(ctx.out(), fmt::format("{}", fmt::join(output, ";")));
+  }
+};
+
+template <>
+struct fmt::formatter<watch_list_app::server::HTTPMethod> : fmt::formatter<std::string> {
+  auto format(watch_list_app::server::HTTPMethod const& v, format_context& ctx) const -> decltype(ctx.out()) {
+    return format_to(ctx.out(), watch_list_app::server::http_method_to_string(v));
   }
 };
 

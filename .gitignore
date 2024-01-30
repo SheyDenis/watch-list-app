@@ -9,6 +9,7 @@ include/watch-list-server/server-settings-schema.hpp
 
 # Misc
 !.github/
+/database/
 
 # Python
 .venv/

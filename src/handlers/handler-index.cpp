@@ -13,18 +13,14 @@
 #include <memory>
 #include <optional>
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
 HandlerIndex::HandlerIndex() : HandlerBase("HandlerIndex") {}
 
-OptionalServerGenericError HandlerIndex::register_endpoints(httplib::Server* server) {
-  return HandlerBase::register_endpoints_internal<HandlerIndex>(server);
-}
-
-OptionalHandlerError HandlerIndex::handle_get(httplib::Request const& req, httplib::Response& res) {
+OptionalHandlerError HandlerIndex::handle_get_impl(httplib::Request const& req, httplib::Response& res) {
   res.set_content("Potato!", "text/plain");
   res.status = httplib::StatusCode::OK_200;
   return std::nullopt;
 }
 
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers

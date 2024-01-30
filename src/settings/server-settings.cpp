@@ -37,6 +37,9 @@ ServerSettings::ServerSettings(rapidjson::Document const& settings_json) {
   if (settings_json.HasMember("httplib")) {
     initialize_httplib_settings(settings_json["httplib"].GetObject());
   }
+  if (settings_json.HasMember("database")) {
+    initialize_database_settings(settings_json["database"].GetObject());
+  }
 }
 
 void ServerSettings::initialize_server_settings(rapidjson::Value::ConstObject const& settings_json) {
@@ -81,6 +84,12 @@ void ServerSettings::initialize_httplib_settings(rapidjson::Value::ConstObject c
 void ServerSettings::initialize_logging_settings(rapidjson::Value::ConstObject const& settings_json) {
   if (settings_json.HasMember("level")) {
     logging_settings_.logger_level = spdlog::level::from_str(settings_json["level"].GetString());
+  }
+}
+
+void ServerSettings::initialize_database_settings(rapidjson::Value::ConstObject const& settings_json) {
+  if (settings_json.HasMember("database_path")) {
+    database_settings_.database_path = settings_json["database_path"].GetString();
   }
 }
 

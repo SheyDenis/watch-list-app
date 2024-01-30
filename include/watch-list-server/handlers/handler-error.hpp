@@ -20,7 +20,7 @@
 #include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-constants.hpp"
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
 struct HandlerError {
   /// @brief Represents an error while handling a request.
@@ -52,7 +52,7 @@ struct HandlerError {
         error(std::move(_error)),
         ex(std::nullopt) {}
 };
-typedef std::optional<HandlerError> OptionalHandlerError;
+using OptionalHandlerError = std::optional<HandlerError>;
 
 static std::string to_string(HandlerError::RequestInfo const& err) {
   return fmt::format(FMT_STRING("[return_code={:d}][url_parameters={:s}]"), err.return_code, err.url_parameters);
@@ -68,6 +68,6 @@ static std::string to_string(HandlerError const& err) {
   return error_msg;
 }
 
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers
 
 #endif  // HANDLER_ERROR_HPP_

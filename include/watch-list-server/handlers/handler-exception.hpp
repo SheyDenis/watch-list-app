@@ -24,7 +24,7 @@
 #include "watch-list-server/json/json-utils.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
 class HandlerException : public HandlerBase {
  private:
@@ -32,6 +32,9 @@ class HandlerException : public HandlerBase {
 
  protected:
   HandlerException() : HandlerBase("HandlerException") {}
+
+ public:
+  ~HandlerException() override = default;
 
   [[nodiscard]] OptionalHandlerError handle_exception(httplib::Request const& req, httplib::Response& res, std::exception_ptr const& exp) {
     rapidjson::Document res_json(rapidjson::Type::kObjectType);
@@ -54,20 +57,17 @@ class HandlerException : public HandlerBase {
     logger_.error("Exception thrown while handling [{} {}] [ex={}]", req.method, req.target, ex_str);
     return std::nullopt;
   }
+};
 
- public:
-  ~HandlerException() override = default;
+template <>
+struct HandlerTraits<HandlerException> {
+  using HandlerType = HandlerException;
 
-  [[nodiscard]] OptionalServerGenericError register_endpoints(httplib::Server* server) override {
-    server->set_exception_handler([&](httplib::Request const& req, httplib::Response& res, std::exception_ptr const& exp) {
-      if (auto const err = handle_exception(req, res, exp)) {
-        logger_.error("Failed to handle exception [{}]", format_error(err));
-      }
-    });
-    return std::nullopt;
+  static void handle_exception(httplib::Request const& req, httplib::Response& res, std::exception_ptr const& exp) {
+    handlers::HandlerInstance<HandlerType>::instance().handle_exception(req, res, exp);
   }
 };
 
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers
 
 #endif  // HANDLER_EXCEPTION_HPP_

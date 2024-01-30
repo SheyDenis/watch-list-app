@@ -41,6 +41,10 @@ struct ServerSettingsLogging : public ServerSettingsBase {
   spdlog::level::level_enum logger_level = spdlog::level::level_enum::info;
 };
 
+struct ServerSettingsDatabase : public ServerSettingsBase {
+  std::string database_path = "database/database.json";
+};
+
 }  // namespace watch_list_app::server::settings
 
 #endif  // SERVER_SETTINGS_MODELS_HPP_

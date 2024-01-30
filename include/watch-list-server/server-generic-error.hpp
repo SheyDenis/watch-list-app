@@ -32,7 +32,7 @@ struct ServerGenericError {
                               std::optional<int> _os_error = std::nullopt)
       : error(std::move(_error)), ex(std::move(_ex)), os_error(_os_error) {}
 };
-typedef std::optional<ServerGenericError> OptionalServerGenericError;
+using OptionalServerGenericError = std::optional<ServerGenericError>;
 template <typename V>
 using ServerGenericErrorVariant = std::variant<ServerGenericError, V>;
 
