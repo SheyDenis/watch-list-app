@@ -12,6 +12,7 @@
 #include <fmt/core.h>
 #include <httplib/httplib.h>
 
+#include <algorithm>
 #include <functional>
 #include <optional>
 #include <string>
@@ -103,14 +104,12 @@ class HandlerBase {
         return ServerGenericError(fmt::format("Unable to register handler for unsupported method [{}]", http_method_to_string(method)));
     }
 
-    bool found = false;
-    for (auto const& itr : registered_handlers_) {
-      if (itr.get().handler_name() == handler_instance.handler_name()) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
+    auto const& hndlr_name = handler_instance.handler_name();
+    if (!std::any_of(registered_handlers_.cbegin(),
+                     registered_handlers_.cend(),
+                     [&hndlr_name](decltype(registered_handlers_)::value_type const& itr) -> bool {
+                       return itr.get().handler_name() == hndlr_name;
+                     })) {
       registered_handlers_.insert(registered_handlers_.cend(), HandlerInstance<T>::instance());
     }
     return std::nullopt;

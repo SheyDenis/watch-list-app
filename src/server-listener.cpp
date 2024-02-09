@@ -22,6 +22,7 @@
 #include "watch-list-server/handlers/handler-exception.hpp"
 #include "watch-list-server/handlers/handler-health-check.hpp"
 #include "watch-list-server/handlers/handler-index.hpp"
+#include "watch-list-server/handlers/handler-request-error.hpp"
 #include "watch-list-server/handlers/handler-users.hpp"
 #include "watch-list-server/settings/server-settings-models.hpp"
 #include "watch-list-server/settings/server-settings.hpp"
@@ -34,7 +35,7 @@ OptionalServerGenericError ServerListener::register_routes() {
   logger_.info("Registering handlers");
 
   server_->set_exception_handler(handlers::HandlerTraits<handlers::HandlerException>::handle_exception);
-  // TODO - Add 404 handler.
+  server_->set_error_handler(handlers::HandlerTraits<handlers::HandlerRequestError>::handle_error);
 
   // Admin routes.
   handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/?");

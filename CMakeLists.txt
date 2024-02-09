@@ -67,7 +67,7 @@ TARGET_COMPILE_DEFINITIONS(${EXEC_NAME}
 
 ADD_CUSTOM_COMMAND(TARGET ${EXEC_NAME} PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/generate-server-settings-schema.cmake)
-INCLUDE_WHAT_YOU_USE(${EXEC_NAME})  # TODO - Fix this sometimes breaking build without any error.
+#INCLUDE_WHAT_YOU_USE(${EXEC_NAME})  # TODO - Fix this sometimes breaking build without any error.
 
 IF (NOT DISABLE_TESTS)
     ENABLE_TESTING()
