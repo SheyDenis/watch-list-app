@@ -18,6 +18,7 @@
 #include <string>
 
 #include "watch-list-server/models/base-model.hpp"
+#include "watch-list-server/models/model-traits.hpp"
 #include "watch-list-server/models/utils.hpp"
 
 namespace watch_list_app::server::models {
@@ -25,14 +26,6 @@ namespace watch_list_app::server::models {
 class UserModel final : public BaseModel {
  private:
   using PasswdHash = SecureString;  // TODO - Make secure and stuff, add salt?
-
- protected:
-  static constexpr char const* model_name_ = "user";
-
-  //  static std::unique_ptr<rapidjson::SchemaDocument> const schema_document_;
-  //  static std::unique_ptr<rapidjson::SchemaValidator> const schema_validator_;
-
-  friend struct ModelTraits<UserModel>;
 
  private:
   uuids::uuid uuid_;
@@ -64,7 +57,6 @@ class UserModel final : public BaseModel {
 
   void serialize_impl(rapidjson::Value& output, rapidjson::Value::AllocatorType& allocator) const override;
   [[nodiscard]] bool deserialize_impl(rapidjson::Value const& data) override;
-  [[nodiscard]] bool is_valid() const override;
 };
 template bool BaseModel::find<UserModel>(std::string const& uuid, UserModel& out, bool& found);
 template bool BaseModel::scan<UserModel>(std::vector<UserModel>& out);

@@ -19,18 +19,12 @@
 #include <vector>
 
 #include "watch-list-server/dal/database.hpp"
+#include "watch-list-server/models/model-traits.hpp"
 #include "watch-list-server/models/utils.hpp"
 #include "watch-list-server/server-error.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 
 namespace watch_list_app::server::models {
-
-template <class T>
-struct ModelTraits {
-  using ModelType = T;
-
-  static constexpr char const* model_name = T::model_name_;
-};
 
 class BaseModel {
  public:
@@ -42,29 +36,15 @@ class BaseModel {
   Timestamp modify_time_;
 
  protected:
-  static constexpr char const* model_name_ = nullptr;
-
-  //  static std::unique_ptr<rapidjson::SchemaDocument> const schema_document_;
-  //  static std::unique_ptr<rapidjson::SchemaValidator> const schema_validator_;
-
   virtual void serialize_impl(rapidjson::Value& output, rapidjson::Value::AllocatorType& allocator) const = 0;
   [[nodiscard]] virtual bool deserialize_impl(rapidjson::Value const& data) = 0;
 
  public:
-  //  static std::unique_ptr<rapidjson::SchemaDocument> create_schema_document(rapidjson::Document const& json_schema) {
-  //    return std::make_unique<rapidjson::SchemaDocument>(json_schema);
-  //  }
-
-  //  static std::unique_ptr<rapidjson::SchemaValidator> create_schema_validator(rapidjson::SchemaDocument const& schema_document) {
-  //    return std::make_unique<rapidjson::SchemaValidator>(schema_document);
-  //  }
-
   BaseModel() = default;
   virtual ~BaseModel() = default;
 
   void serialize(rapidjson::Value& output, rapidjson::Value::AllocatorType& allocator) const;
   [[nodiscard]] bool deserialize(rapidjson::Value const& data);
-  [[nodiscard]] virtual bool is_valid() const = 0;  // TODO - Document.
 
   template <class T>
   [[nodiscard]] static bool find(std::string const& uuid, T& out, bool& found) {

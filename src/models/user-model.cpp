@@ -166,9 +166,4 @@ bool UserModel::deserialize_impl(rapidjson::Value const& data) {
   return true;
 }
 
-bool UserModel::is_valid() const {
-  LOG_NOT_IMPLEMENTED();
-  return true;
-}
-
 }  // namespace watch_list_app::server::models
