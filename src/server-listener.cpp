@@ -38,12 +38,22 @@ OptionalServerGenericError ServerListener::register_routes() {
   server_->set_error_handler(handlers::HandlerTraits<handlers::HandlerRequestError>::handle_error);
 
   // Admin routes.
-  handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/?");
-  handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/:uid");
-
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(
+          server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/?")) {
+    return err;
+  }
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(
+          server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/:uid")) {
+    return err;
+  }
   // API routes.
-  handlers::HandlerBase::register_endpoints<handlers::HandlerIndex>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/?");
-  handlers::HandlerBase::register_endpoints<handlers::HandlerHealthCheck>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/health/?");
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerIndex>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/?")) {
+    return err;
+  }
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerHealthCheck>(
+          server_.get(), logger_, HTTPMethod::HTTP_GET, "/health/?")) {
+    return err;
+  }
 
   logger_.info("Finished registering handlers");
 

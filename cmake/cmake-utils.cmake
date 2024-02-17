@@ -6,7 +6,11 @@ SET(DEFAULT_COMPILER_WARNING_FLAGS
     -Werror=shadow
     -Werror=unused
     -Werror=unused-const-variable
+    -Werror=unused-function
+    -Werror=unused-local-typedefs
     -Werror=unused-parameter
+    -Werror=unused-result
+    -Werror=unused-variable
 
     $<$<BOOL:${IS_DEV}>:-Wno-unused-const-variable>
     $<$<BOOL:${IS_DEV}>:-Wno-unused-parameter>

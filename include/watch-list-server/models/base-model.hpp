@@ -19,6 +19,8 @@
 #include <vector>
 
 #include "watch-list-server/dal/database.hpp"
+#include "watch-list-server/json/json-utils.hpp"
+#include "watch-list-server/models/model-exception.hpp"
 #include "watch-list-server/models/model-traits.hpp"
 #include "watch-list-server/models/utils.hpp"
 #include "watch-list-server/server-error.hpp"
@@ -47,7 +49,7 @@ class BaseModel {
   [[nodiscard]] bool deserialize(rapidjson::Value const& data);
 
   template <class T>
-  [[nodiscard]] static bool find(std::string const& uuid, T& out, bool& found) {
+  [[nodiscard]] static bool find(std::string const& uuid, T& out) noexcept(false) {
     auto data = dal::Database::instance()->find(ModelTraits<T>::model_name, uuid);
     if (std::holds_alternative<ServerGenericError>(data)) {
       throw std::runtime_error(format_error(std::get<ServerGenericError>(data)));
@@ -64,15 +66,17 @@ class BaseModel {
     //    }
 
     if (json_data.IsNull()) {
-      found = false;
       return false;
     }
-    found = true;
-    return out.deserialize(json_data);
+
+    if (!out.deserialize(json_data)) {
+      throw InvalidModelException(ModelTraits<T>::model_name, json_data);
+    }
+    return true;
   }
 
   template <class T>
-  [[nodiscard]] static bool scan(std::vector<T>& out) {
+  static void scan(std::vector<T>& out) noexcept(false) {
     auto data = dal::Database::instance()->scan(ModelTraits<T>::model_name);
     if (std::holds_alternative<ServerGenericError>(data)) {
       throw std::runtime_error(format_error(std::get<ServerGenericError>(data)));
@@ -83,7 +87,7 @@ class BaseModel {
     for (auto const& itr : json_data.GetArray()) {
       T v;
       if (!v.deserialize(itr)) {
-        return false;
+        throw InvalidModelException(ModelTraits<T>::model_name, itr);
       }
       out.insert(out.cend(), v);
     }
@@ -95,8 +99,6 @@ class BaseModel {
     //                                                      ModelTraits<T>::model_name,
     //                                                      json::JSONUtils::dump(ModelTraits<T>::schema_validator.GetError())))));
     //    }
-
-    return true;
   }
 };
 

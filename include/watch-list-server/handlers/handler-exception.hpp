@@ -22,6 +22,7 @@
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
 #include "watch-list-server/json/json-utils.hpp"
+#include "watch-list-server/server-constants.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 
 namespace watch_list_app::server::handlers {
@@ -64,7 +65,9 @@ struct HandlerTraits<HandlerException> {
   using HandlerType = HandlerException;
 
   static void handle_exception(httplib::Request const& req, httplib::Response& res, std::exception_ptr const& exp) {
-    handlers::HandlerInstance<HandlerType>::instance().handle_exception(req, res, exp);
+    if (auto err = handlers::HandlerInstance<HandlerType>::instance().handle_exception(req, res, exp)) {
+      ServerConstants::root_logger().error("Error while handling HandlerException [{}]", to_string(*err));
+    }
   }
 };
 

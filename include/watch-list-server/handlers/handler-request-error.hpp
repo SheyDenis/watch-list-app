@@ -35,9 +35,9 @@ class HandlerRequestError : public HandlerBase {
  public:
   ~HandlerRequestError() override = default;
 
-  [[nodiscard]] OptionalHandlerError handle_error(httplib::Request const& req, httplib::Response& res) {
+  void handle_error(httplib::Request const& req, httplib::Response& res) {
     if (res.status != httplib::StatusCode::NotFound_404) {
-      return std::nullopt;
+      return;
     }
 
     if (res.body.empty()) {
@@ -49,8 +49,6 @@ class HandlerRequestError : public HandlerBase {
 
       res.set_content(json::JSONUtils::dump(res_json), "application/json");
     }
-
-    return std::nullopt;
   }
 };
 

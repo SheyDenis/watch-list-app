@@ -28,19 +28,19 @@ struct HandlerTraits {
   using HandlerType = T;
 
   static void handle_delete(httplib::Request const& req, httplib::Response& res) {
-    handlers::HandlerInstance<HandlerType>::instance().handle_delete(req, res);
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_delete(req, res);
   }
   static void handle_get(httplib::Request const& req, httplib::Response& res) {
-    handlers::HandlerInstance<HandlerType>::instance().handle_get(req, res);
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_get(req, res);
   }
   static void handle_patch(httplib::Request const& req, httplib::Response& res) {
-    handlers::HandlerInstance<HandlerType>::instance().handle_patch(req, res);
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_patch(req, res);
   }
   static void handle_post(httplib::Request const& req, httplib::Response& res) {
-    handlers::HandlerInstance<HandlerType>::instance().handle_post(req, res);
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_post(req, res);
   }
   static void handle_put(httplib::Request const& req, httplib::Response& res) {
-    handlers::HandlerInstance<HandlerType>::instance().handle_put(req, res);
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_put(req, res);
   }
 };
 

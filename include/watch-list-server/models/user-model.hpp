@@ -58,8 +58,8 @@ class UserModel final : public BaseModel {
   void serialize_impl(rapidjson::Value& output, rapidjson::Value::AllocatorType& allocator) const override;
   [[nodiscard]] bool deserialize_impl(rapidjson::Value const& data) override;
 };
-template bool BaseModel::find<UserModel>(std::string const& uuid, UserModel& out, bool& found);
-template bool BaseModel::scan<UserModel>(std::vector<UserModel>& out);
+template bool BaseModel::find<UserModel>(std::string const& uuid, UserModel& out);
+template void BaseModel::scan<UserModel>(std::vector<UserModel>& out);
 
 }  // namespace watch_list_app::server::models
 

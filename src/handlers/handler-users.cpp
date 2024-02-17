@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <optional>
+#include <stdexcept>
 
 #include "watch-list-server/models/base-model.hpp"
 #include "watch-list-server/models/user-model.hpp"
@@ -36,17 +37,16 @@ OptionalHandlerError HandlerUsers::handle_get_impl(httplib::Request const& req, 
 OptionalHandlerError HandlerUsers::handle_get_user(httplib::Request const& req, httplib::Response& res) {
   std::string const uuid(req.path_params.at("uid"));
 
-  bool found;
   models::UserModel model;
-  models::UserModel::find(uuid, model, found);
-  rapidjson::Document data;
-  if (!found) {
+  if (!models::UserModel::find(uuid, model)) {
     res.status = httplib::StatusCode::NotFound_404;
-  } else {
-    model.serialize(data, data.GetAllocator());
-    res.set_content(json::JSONUtils::dump(data, 2), "application/json");
-    res.status = httplib::StatusCode::OK_200;
+    return std::nullopt;
   }
+
+  rapidjson::Document data;
+  model.serialize(data, data.GetAllocator());
+  res.set_content(json::JSONUtils::dump(data, 2), "application/json");
+  res.status = httplib::StatusCode::OK_200;
   return std::nullopt;
 }
 
