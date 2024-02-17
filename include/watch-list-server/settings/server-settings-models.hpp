@@ -42,6 +42,10 @@ struct ServerSettingsLogging : public ServerSettingsBase {
 };
 
 struct ServerSettingsDatabase : public ServerSettingsBase {
+  enum class DatabaseType {
+    JSON = 0,
+  };
+  DatabaseType database_type = DatabaseType::JSON;
   std::string database_path = "database/database.json";
 };
 

@@ -17,7 +17,7 @@ namespace watch_list_app::server::handlers {
 
 HandlerIndex::HandlerIndex() : HandlerBase("HandlerIndex") {}
 
-OptionalHandlerError HandlerIndex::handle_get_impl(httplib::Request const& req, httplib::Response& res) {
+OptionalHandlerError HandlerIndex::handle_get_impl([[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
   res.set_content("Potato!", "text/plain");
   res.status = httplib::StatusCode::OK_200;
   return std::nullopt;

@@ -25,7 +25,7 @@ namespace watch_list_app::server::handlers {
 
 HandlerHealthCheck::HandlerHealthCheck() : HandlerBase("HandlerHealthCheck") {}
 
-OptionalHandlerError HandlerHealthCheck::handle_get_impl(httplib::Request const& req, httplib::Response& res) {
+OptionalHandlerError HandlerHealthCheck::handle_get_impl([[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
   rapidjson::Document res_json(rapidjson::Type::kObjectType);
 
   res_json.AddMember("timestamp",

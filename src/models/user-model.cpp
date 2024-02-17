@@ -19,7 +19,7 @@
 #include "watch-list-server/dev-utils.hpp"
 namespace {
 
-rapidjson::Document const& get_model_schema() {
+[[maybe_unused]] rapidjson::Document const& get_model_schema() {
   static bool initialized = false;
   static rapidjson::Document json_schema(rapidjson::kObjectType);
 

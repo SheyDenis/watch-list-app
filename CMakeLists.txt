@@ -22,14 +22,17 @@ FIND_PACKAGE(spdlog REQUIRED)
 FIND_PACKAGE(stduuid REQUIRED)
 
 ADD_EXECUTABLE(${EXEC_NAME}
+               src/dal/database-json.cpp
                src/dal/database.cpp
                src/handlers/handler-base.cpp
+               src/handlers/handler-error.cpp
                src/handlers/handler-health-check.cpp
                src/handlers/handler-index.cpp
                src/handlers/handler-users.cpp
                src/main.cpp
                src/models/base-model.cpp
                src/models/user-model.cpp
+               src/server-generic-error.cpp
                src/server-listener.cpp
                src/settings/server-settings-loader.cpp
                src/settings/server-settings.cpp

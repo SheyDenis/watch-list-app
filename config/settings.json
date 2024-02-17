@@ -10,5 +10,9 @@
   },
   "logging": {
     "level": "debug"
+  },
+  "database": {
+    "database_type": "json",
+    "database_path": "database/database.json"
   }
 }

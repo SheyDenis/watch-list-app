@@ -17,7 +17,7 @@
 #include <optional>
 #include <string>
 
-#include "watch-list-server/dal/database.hpp"
+#include "watch-list-server/dal/database-builder.hpp"
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-exception.hpp"
 #include "watch-list-server/handlers/handler-health-check.hpp"
@@ -51,7 +51,7 @@ OptionalServerGenericError ServerListener::register_routes() {
 }
 
 OptionalServerGenericError ServerListener::initialize() {
-  if (auto err = dal::Database::initialize(settings::ServerSettings::database_settings())) {
+  if (auto err = dal::DatabaseBuilder::initialize(settings::ServerSettings::database_settings())) {
     return err;
   }
 

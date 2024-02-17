@@ -50,7 +50,7 @@ OptionalHandlerError HandlerUsers::handle_get_user(httplib::Request const& req, 
   return std::nullopt;
 }
 
-OptionalHandlerError HandlerUsers::handle_list_users(httplib::Request const& req, httplib::Response& res) {
+OptionalHandlerError HandlerUsers::handle_list_users([[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
   rapidjson::Document data(rapidjson::kArrayType);
 
   std::vector<models::UserModel> models;

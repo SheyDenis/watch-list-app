@@ -15,50 +15,34 @@
 namespace watch_list_app::server::dal {
 std::shared_ptr<Database> Database::instance_ = nullptr;
 
-OptionalServerGenericError Database::initialize(settings::ServerSettingsDatabase const& settings) {
-  if (instance_ != nullptr) {
-    return ServerGenericError(fmt::format("Called [{}] multiple times", __PRETTY_FUNCTION__));
-  }
-  instance_.reset(new Database(settings.database_path));
+Database::Database(std::string const& database_name) : logger_(database_name) {}
 
-  auto json_data = json::JSONUtils::read_file(instance_->database_path_);
-  if (std::holds_alternative<ServerGenericError>(json_data)) {
-    instance_.reset();
-    return std::move(std::get<ServerGenericError>(json_data));
-  }
-
-  instance_->data_ = std::move(std::get<rapidjson::Document>(json_data));
-
-  return std::nullopt;
+OptionalServerGenericError Database::initialize() {
+  return initialize_impl();
 }
 
 ServerGenericErrorVariant<rapidjson::Value> Database::find(TableName table_name, std::string const& uuid) {
-  if (!data_.HasMember(table_name.data())) {
-    return ServerGenericError(fmt::format("No such table [{}]", table_name));
-  }
-  for (auto const& itr : data_[table_name.data()].GetArray()) {
-    if (itr["uuid"].GetString() == uuid) {
-      rapidjson::Value res;
-      res.CopyFrom(itr, data_.GetAllocator(), true);
-      return res;
-    }
-  }
-
-  return rapidjson::Value(rapidjson::kNullType);
+  return find_impl(table_name, uuid);
 }
 
 ServerGenericErrorVariant<rapidjson::Document> Database::scan(TableName table_name) {
-  if (!data_.HasMember(table_name.data())) {
-    return ServerGenericError(fmt::format("No such table [{}]", table_name));
-  }
-
-  rapidjson::Document res(rapidjson::kArrayType);
-
-  for (auto const& itr : data_[table_name.data()].GetArray()) {
-    rapidjson::Value v;
-    v.CopyFrom(itr, res.GetAllocator(), true);
-    res.PushBack(v, res.GetAllocator());
-  }
-  return res;
+  return scan_impl(table_name);
 }
+
+ServerGenericErrorVariant<rapidjson::Document> Database::add(TableName table_name, DataModelConstRef data) {
+  return add_impl(table_name, data);
+}
+
+ServerGenericErrorVariant<rapidjson::Document> Database::add(TableName table_name, std::initializer_list<DataModelConstRef> data) {
+  return add_impl(table_name, data);
+}
+
+ServerGenericErrorVariant<rapidjson::Document> Database::replace(TableName table_name, DataModelConstRef data) {
+  return replace_impl(table_name, data);
+}
+
+ServerGenericErrorVariant<rapidjson::Document> Database::remove(TableName table_name, void* key) {
+  return remove_impl(table_name, key);
+}
+
 }  // namespace watch_list_app::server::dal

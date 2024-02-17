@@ -13,6 +13,7 @@
 #include <spdlog/common.h>
 
 #include <optional>
+#include <stdexcept>
 
 namespace watch_list_app::server::settings {
 
@@ -88,6 +89,14 @@ void ServerSettings::initialize_logging_settings(rapidjson::Value::ConstObject c
 }
 
 void ServerSettings::initialize_database_settings(rapidjson::Value::ConstObject const& settings_json) {
+  if (settings_json.HasMember("database_type")) {
+    auto const& database_type = settings_json["database_type"];
+    if (database_type == "json") {
+      database_settings_.database_type = ServerSettingsDatabase::DatabaseType::JSON;
+    } else {
+      throw std::runtime_error("Invalid database type");
+    }
+  }
   if (settings_json.HasMember("database_path")) {
     database_settings_.database_path = settings_json["database_path"].GetString();
   }
