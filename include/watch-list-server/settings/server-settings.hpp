@@ -25,6 +25,7 @@ class ServerSettings {
   ServerSettingsServer server_settings_;
   ServerSettingsLogging logging_settings_;
   ServerSettingsHTTPLib httplib_settings_;
+  ServerSettingsDatabase database_settings_;
 
  private:
   explicit ServerSettings(rapidjson::Document const& settings_json);
@@ -34,6 +35,7 @@ class ServerSettings {
   void initialize_server_settings(rapidjson::Value::ConstObject const& settings_json);
   void initialize_logging_settings(rapidjson::Value::ConstObject const& settings_json);
   void initialize_httplib_settings(rapidjson::Value::ConstObject const& settings_json);
+  void initialize_database_settings(rapidjson::Value::ConstObject const& settings_json);
 
   friend class ServerSettingsLoader;
 
@@ -46,6 +48,9 @@ class ServerSettings {
   }
   [[nodiscard]] static auto const& logging_settings() {
     return instance_->logging_settings_;
+  }
+  [[nodiscard]] static auto const& database_settings() {
+    return instance_->database_settings_;
   }
 };
 

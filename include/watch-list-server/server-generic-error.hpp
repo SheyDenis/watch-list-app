@@ -9,8 +9,6 @@
 #ifndef SERVER_GENERIC_ERROR_HPP_
 #define SERVER_GENERIC_ERROR_HPP_
 
-#include <fmt/core.h>
-
 #include <optional>
 #include <string>
 #include <utility>
@@ -32,22 +30,11 @@ struct ServerGenericError {
                               std::optional<int> _os_error = std::nullopt)
       : error(std::move(_error)), ex(std::move(_ex)), os_error(_os_error) {}
 };
-typedef std::optional<ServerGenericError> OptionalServerGenericError;
+using OptionalServerGenericError = std::optional<ServerGenericError>;
 template <typename V>
 using ServerGenericErrorVariant = std::variant<ServerGenericError, V>;
 
-static std::string to_string(ServerGenericError const& err) {
-  if (ServerConstants::include_debug_data()) {
-    std::string os_error_str = "N/A";
-
-    if (err.os_error.has_value()) {
-      os_error_str = fmt::format("{} {}", *err.os_error, strerror(*err.os_error));
-    }
-
-    return fmt::format(FMT_STRING("{} [ex={}][os_error={}]"), err.error, err.ex.has_value() ? *err.ex : "N/A", os_error_str);
-  }
-  return err.error;
-}
+std::string to_string(ServerGenericError const& err);
 
 }  // namespace watch_list_app::server
 

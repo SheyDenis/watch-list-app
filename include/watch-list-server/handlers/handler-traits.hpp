@@ -9,39 +9,41 @@
 #ifndef HANDLER_TRAITS_HPP_
 #define HANDLER_TRAITS_HPP_
 
+#include <httplib.h>
+
 #include <type_traits>
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
-template <typename T>
-struct HandlerTypes {
-  static constexpr char const* resource_pattern = nullptr;
-
-  static bool constexpr handle_delete = false;
-  static bool constexpr handle_get = false;
-  static bool constexpr handle_patch = false;
-  static bool constexpr handle_post = false;
-  static bool constexpr handle_put = false;
+template <class T>
+struct HandlerInstance {
+  static T& instance() {
+    static T instance;
+    return instance;
+  }
 };
 
 template <typename T>
 struct HandlerTraits {
-  typedef T HandlerType;
+  using HandlerType = T;
 
-  static constexpr char const* resource_pattern = HandlerTypes<T>::resource_pattern;
-
-  static bool constexpr handle_delete = HandlerTypes<T>::handle_delete;
-  static bool constexpr handle_get = HandlerTypes<T>::handle_get;
-  static bool constexpr handle_patch = HandlerTypes<T>::handle_patch;
-  static bool constexpr handle_post = HandlerTypes<T>::handle_post;
-  static bool constexpr handle_put = HandlerTypes<T>::handle_put;
-
-  static_assert(std::bool_constant<handle_delete>::value || std::bool_constant<handle_get>::value ||
-                    std::bool_constant<handle_patch>::value || std::bool_constant<handle_post>::value ||
-                    std::bool_constant<handle_put>::value,
-                "Handler does not handle any method");
+  static void handle_delete(httplib::Request const& req, httplib::Response& res) {
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_delete(req, res);
+  }
+  static void handle_get(httplib::Request const& req, httplib::Response& res) {
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_get(req, res);
+  }
+  static void handle_patch(httplib::Request const& req, httplib::Response& res) {
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_patch(req, res);
+  }
+  static void handle_post(httplib::Request const& req, httplib::Response& res) {
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_post(req, res);
+  }
+  static void handle_put(httplib::Request const& req, httplib::Response& res) {
+    [[maybe_unused]] auto const err = handlers::HandlerInstance<HandlerType>::instance().handle_put(req, res);
+  }
 };
 
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers
 
 #endif  // HANDLER_TRAITS_HPP_

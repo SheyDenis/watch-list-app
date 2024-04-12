@@ -3,6 +3,8 @@
   "title": "WatchListApp Server Settings JSON Schema",
   "type": "object",
   "additionalProperties": false,
+  "required": [
+  ],
   "properties": {
     "server": {
       "type": "object",
@@ -85,6 +87,34 @@
           ]
         }
       }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "database_type": {
+          "type": "string",
+          "enum": [
+            "json"
+          ]
+        },
+        "database_path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "database_type"
+      ],
+      "oneOf": [
+        {
+          "database_type": {
+            "const": "json"
+          },
+          "required": [
+            "database_path"
+          ]
+        }
+      ]
     }
   }
 }

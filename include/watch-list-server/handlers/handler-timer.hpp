@@ -15,7 +15,7 @@
 #include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-logger.hpp"
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 class HandlerTimer {
  private:
   ServerLogger logger_;
@@ -34,6 +34,6 @@ class HandlerTimer {
                   std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start_time_).count());
   }
 };
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers
 
 #endif  // HANDLER_TIMER_HPP_

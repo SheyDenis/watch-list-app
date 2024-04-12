@@ -13,6 +13,7 @@
 
 #include <memory>
 
+#include "watch-list-server/http-utils.hpp"
 #include "watch-list-server/server-generic-error.hpp"
 #include "watch-list-server/server-logger.hpp"
 
@@ -22,6 +23,9 @@ class ServerListener {
  private:
   ServerLogger logger_;
   std::unique_ptr<httplib::Server> server_;
+
+ private:
+  [[nodiscard]] OptionalServerGenericError register_routes();
 
  public:
   ServerListener();

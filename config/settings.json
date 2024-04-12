@@ -2,7 +2,7 @@
   "server": {
     "server_address": "localhost",
     "server_port": 8000,
-    "log_requests": false
+    "log_requests": true
   },
   "httplib": {
     "thread_pool_size": 1,
@@ -10,5 +10,9 @@
   },
   "logging": {
     "level": "debug"
+  },
+  "database": {
+    "database_type": "json",
+    "database_path": "database/database.json"
   }
 }

@@ -14,9 +14,8 @@
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-error.hpp"
 #include "watch-list-server/handlers/handler-traits.hpp"
-#include "watch-list-server/server-generic-error.hpp"
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
 class HandlerHealthCheck : public HandlerBase {
  private:
@@ -25,25 +24,12 @@ class HandlerHealthCheck : public HandlerBase {
  protected:
   HandlerHealthCheck();
 
-  [[nodiscard]] OptionalHandlerError handle_get(httplib::Request const& req, httplib::Response& res) override;
-
  public:
   ~HandlerHealthCheck() override = default;
 
-  [[nodiscard]] OptionalServerGenericError register_endpoints(httplib::Server* server) override;
+  [[nodiscard]] OptionalHandlerError handle_get_impl(httplib::Request const& req, httplib::Response& res) override;
 };
 
-template <>
-struct HandlerTypes<HandlerHealthCheck> {
-  static constexpr char const* resource_pattern = "/health";
-
-  static bool constexpr handle_delete = false;
-  static bool constexpr handle_get = true;
-  static bool constexpr handle_patch = false;
-  static bool constexpr handle_post = false;
-  static bool constexpr handle_put = false;
-};
-
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers
 
 #endif  // HANDLER_HEALTH_CHECK_HPP_

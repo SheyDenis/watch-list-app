@@ -21,15 +21,11 @@
 
 #include "watch-list-server/json/json-utils.hpp"
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
 HandlerHealthCheck::HandlerHealthCheck() : HandlerBase("HandlerHealthCheck") {}
 
-OptionalServerGenericError HandlerHealthCheck::register_endpoints(httplib::Server* server) {
-  return HandlerBase::register_endpoints_internal<HandlerHealthCheck>(server);
-}
-
-OptionalHandlerError HandlerHealthCheck::handle_get(httplib::Request const& req, httplib::Response& res) {
+OptionalHandlerError HandlerHealthCheck::handle_get_impl([[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
   rapidjson::Document res_json(rapidjson::Type::kObjectType);
 
   res_json.AddMember("timestamp",
@@ -77,4 +73,4 @@ OptionalHandlerError HandlerHealthCheck::handle_get(httplib::Request const& req,
   return std::nullopt;
 }
 
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers

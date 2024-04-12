@@ -9,18 +9,14 @@
 #ifndef HANDLER_ERROR_HPP_
 #define HANDLER_ERROR_HPP_
 
-#include <fmt/core.h>
 #include <httplib/httplib.h>
-#include <spdlog/formatter.h>
 
 #include <optional>
 #include <string>
 
-#include "watch-list-server/formatter-utils.hpp"
 #include "watch-list-server/http-utils.hpp"
-#include "watch-list-server/server-constants.hpp"
 
-namespace watch_list_app::server {
+namespace watch_list_app::server::handlers {
 
 struct HandlerError {
   /// @brief Represents an error while handling a request.
@@ -52,22 +48,11 @@ struct HandlerError {
         error(std::move(_error)),
         ex(std::nullopt) {}
 };
-typedef std::optional<HandlerError> OptionalHandlerError;
+using OptionalHandlerError = std::optional<HandlerError>;
 
-static std::string to_string(HandlerError::RequestInfo const& err) {
-  return fmt::format(FMT_STRING("[return_code={:d}][url_parameters={:s}]"), err.return_code, err.url_parameters);
-}
+std::string to_string(HandlerError::RequestInfo const& err);
+std::string to_string(HandlerError const& err);
 
-static std::string to_string(HandlerError const& err) {
-  std::string error_msg(fmt::format(
-      FMT_STRING("Handler [{}] failed [{}] request [error={}]"), err.handler_name, http_method_to_string(err.method), err.error));
-  if (ServerConstants::include_debug_data()) {
-    error_msg.append(
-        fmt::format(FMT_STRING("[ex={}][request_info={}]"), err.ex.has_value() ? *err.ex : "N/A", to_string(err.request_info)));
-  }
-  return error_msg;
-}
-
-}  // namespace watch_list_app::server
+}  // namespace watch_list_app::server::handlers
 
 #endif  // HANDLER_ERROR_HPP_

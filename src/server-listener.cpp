@@ -16,20 +16,55 @@
 #include <functional>
 #include <optional>
 #include <string>
-#include <vector>
 
+#include "watch-list-server/dal/database-builder.hpp"
 #include "watch-list-server/handlers/handler-base.hpp"
 #include "watch-list-server/handlers/handler-exception.hpp"
 #include "watch-list-server/handlers/handler-health-check.hpp"
 #include "watch-list-server/handlers/handler-index.hpp"
+#include "watch-list-server/handlers/handler-request-error.hpp"
+#include "watch-list-server/handlers/handler-users.hpp"
 #include "watch-list-server/settings/server-settings-models.hpp"
 #include "watch-list-server/settings/server-settings.hpp"
 
 namespace watch_list_app::server {
 
-ServerListener::ServerListener() : logger_("ServerListener") {}
+ServerListener::ServerListener() : logger_("ServerListener"), server_(nullptr) {}
+
+OptionalServerGenericError ServerListener::register_routes() {
+  logger_.info("Registering handlers");
+
+  server_->set_exception_handler(handlers::HandlerTraits<handlers::HandlerException>::handle_exception);
+  server_->set_error_handler(handlers::HandlerTraits<handlers::HandlerRequestError>::handle_error);
+
+  // Admin routes.
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(
+          server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/?")) {
+    return err;
+  }
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerUsers>(
+          server_.get(), logger_, HTTPMethod::HTTP_GET, "/admin/users/:uid")) {
+    return err;
+  }
+  // API routes.
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerIndex>(server_.get(), logger_, HTTPMethod::HTTP_GET, "/?")) {
+    return err;
+  }
+  if (auto err = handlers::HandlerBase::register_endpoints<handlers::HandlerHealthCheck>(
+          server_.get(), logger_, HTTPMethod::HTTP_GET, "/health/?")) {
+    return err;
+  }
+
+  logger_.info("Finished registering handlers");
+
+  return std::nullopt;
+}
 
 OptionalServerGenericError ServerListener::initialize() {
+  if (auto err = dal::DatabaseBuilder::initialize(settings::ServerSettings::database_settings())) {
+    return err;
+  }
+
   auto const& httplib_settings = settings::ServerSettings::httplib_settings();
   server_ = std::make_unique<httplib::Server>();
 
@@ -51,24 +86,7 @@ OptionalServerGenericError ServerListener::initialize() {
   auto thread_pool_size = httplib_settings.thread_pool_size;
   server_->new_task_queue = [thread_pool_size]() -> httplib::ThreadPool* { return new httplib::ThreadPool(thread_pool_size); };
 
-  std::vector<std::reference_wrapper<HandlerBase>> handlers{
-      HandlerInstance<HandlerException>::instance(),
-      HandlerInstance<HandlerHealthCheck>::instance(),
-      HandlerInstance<HandlerIndex>::instance(),
-  };
-  logger_.info("Registering [{}] handlers", handlers.size());
-
-  for (auto const& itr : handlers) {
-    logger_.info("Registering handler [{}]", itr.get().handler_name());
-    if (auto err = itr.get().register_endpoints(server_.get())) {
-      logger_.error("Failed to register handler [{}]", itr.get().handler_name());
-      return err;
-    }
-  }
-
-  logger_.info("Finished registering handlers");
-
-  return std::nullopt;
+  return register_routes();
 }
 
 OptionalServerGenericError ServerListener::run() {
