@@ -29,7 +29,7 @@
 
 namespace watch_list_app::server {
 
-ServerListener::ServerListener() : logger_("ServerListener") {}
+ServerListener::ServerListener() : logger_("ServerListener"), server_(nullptr) {}
 
 OptionalServerGenericError ServerListener::register_routes() {
   logger_.info("Registering handlers");

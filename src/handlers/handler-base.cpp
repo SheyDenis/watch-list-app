@@ -19,7 +19,7 @@ namespace watch_list_app::server::handlers {
 
 std::vector<std::reference_wrapper<HandlerBase const>> HandlerBase::registered_handlers_;
 
-HandlerBase::HandlerBase(std::string const& handler_name) : logger_(handler_name), handler_name_(handler_name) {}
+HandlerBase::HandlerBase(std::string const& handler_name) : call_metrics_({}), logger_(handler_name), handler_name_(handler_name) {}
 
 HandlerError HandlerBase::missing_handler([[maybe_unused]] HTTPMethod method,
                                           [[maybe_unused]] httplib::Request const& req,

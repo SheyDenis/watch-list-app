@@ -64,7 +64,7 @@ UserModel::PasswdHash UserModel::hash_passwd(SecureString const& passwd) {
   return passwd;
 }
 
-UserModel::UserModel() : BaseModel(), uuid_(uuids::uuid_system_generator{}()) {}
+UserModel::UserModel() : BaseModel(), uuid_(uuids::uuid_system_generator{}()), name_({}), email_({}), passwd_hash_({}), roles_({}) {}
 
 uuids::uuid const& UserModel::get_uuid() const {
   return uuid_;
@@ -108,13 +108,13 @@ std::set<std::string> const& UserModel::get_roles() const {
 }
 
 void UserModel::add_roles(std::initializer_list<std::string> roles) {
-  for (auto& itr : roles) {
+  for (auto const& itr : roles) {
     roles_.insert(itr);
   }
 }
 
 void UserModel::remove_roles(std::initializer_list<std::string> roles) {
-  for (auto& itr : roles) {
+  for (auto const& itr : roles) {
     roles_.erase(itr);
   }
 }

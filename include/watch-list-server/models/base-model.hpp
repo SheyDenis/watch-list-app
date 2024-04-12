@@ -42,7 +42,7 @@ class BaseModel {
   [[nodiscard]] virtual bool deserialize_impl(rapidjson::Value const& data) = 0;
 
  public:
-  BaseModel() = default;
+  BaseModel();
   virtual ~BaseModel() = default;
 
   void serialize(rapidjson::Value& output, rapidjson::Value::AllocatorType& allocator) const;

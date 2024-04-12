@@ -16,7 +16,8 @@
 #include "watch-list-server/server-generic-error.hpp"
 
 namespace watch_list_app::server::dal {
-DatabaseJSON::DatabaseJSON(std::string database_path) : Database("DatabaseJSON"), database_path_(std::move(database_path)) {}
+DatabaseJSON::DatabaseJSON(std::string database_path)
+    : Database("DatabaseJSON"), database_path_(std::move(database_path)), data_(rapidjson::kNullType) {}
 
 OptionalServerGenericError DatabaseJSON::initialize_impl() {
   auto json_data = json::JSONUtils::read_file(database_path_);

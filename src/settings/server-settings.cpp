@@ -28,7 +28,8 @@ OptionalServerGenericError ServerSettings::initialize(rapidjson::Document const&
   return std::nullopt;
 }
 
-ServerSettings::ServerSettings(rapidjson::Document const& settings_json) {
+ServerSettings::ServerSettings(rapidjson::Document const& settings_json)
+    : server_settings_({}), logging_settings_({}), httplib_settings_({}), database_settings_({}) {
   if (settings_json.HasMember("logging")) {
     initialize_logging_settings(settings_json["logging"].GetObject());
   }
@@ -57,10 +58,10 @@ void ServerSettings::initialize_server_settings(rapidjson::Value::ConstObject co
 
 void ServerSettings::initialize_httplib_settings(rapidjson::Value::ConstObject const& settings_json) {
   if (settings_json.HasMember("thread_pool_size")) {
-    httplib_settings_.thread_pool_size = settings_json["thread_pool_size"].GetInt();
+    httplib_settings_.thread_pool_size = settings_json["thread_pool_size"].GetUint64();
   }
   if (settings_json.HasMember("keep_alive_max_count")) {
-    httplib_settings_.keep_alive_max_count = settings_json["keep_alive_max_count"].GetInt64();
+    httplib_settings_.keep_alive_max_count = settings_json["keep_alive_max_count"].GetUint64();
   }
   if (settings_json.HasMember("keep_alive_timeout_sec")) {
     httplib_settings_.keep_alive_timeout_sec = settings_json["keep_alive_timeout_sec"].GetInt64();

@@ -12,6 +12,8 @@
 
 namespace watch_list_app::server::models {
 
+BaseModel::BaseModel() : create_time_(Timestamp::min()), modify_time_(Timestamp::min()) {}
+
 void BaseModel::serialize(rapidjson::Value& output, rapidjson::Value::AllocatorType& allocator) const {
   serialize_impl(output, allocator);
 
