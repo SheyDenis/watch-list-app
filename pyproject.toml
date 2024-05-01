@@ -7,9 +7,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-conan = "^2.0.16"
-pre-commit = "^3.6.0"
 
+Django = "~5.0.0"
+overrides = "*"
+pre-commit = "*"
+python-dotenv = "*"
+
+[tool.poetry.group.dev.dependencies]
+isort = "*"
+pydantic = "*"
+pylint = "*"
+pytest = "*"
+xenon = "*"
+yapf = "*"
 
 [build-system]
 requires = ["poetry-core"]
