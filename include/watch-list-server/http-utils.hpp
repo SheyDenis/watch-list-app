@@ -14,6 +14,7 @@
 
 namespace watch_list_app::server {
 
+// FIXME - Use Pistache instead.
 enum class HTTPMethod : std::uint8_t {
   HTTP_DELETE,
   HTTP_GET,

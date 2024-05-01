@@ -24,7 +24,7 @@ class ServerSettings {
 
   ServerSettingsServer server_settings_;
   ServerSettingsLogging logging_settings_;
-  ServerSettingsHTTPLib httplib_settings_;
+  ServerSettingsPistache pistache_settings_;
   ServerSettingsDatabase database_settings_;
 
  private:
@@ -34,7 +34,7 @@ class ServerSettings {
 
   void initialize_server_settings(rapidjson::Value::ConstObject const& settings_json);
   void initialize_logging_settings(rapidjson::Value::ConstObject const& settings_json);
-  void initialize_httplib_settings(rapidjson::Value::ConstObject const& settings_json);
+  void initialize_pistache_settings(rapidjson::Value::ConstObject const& settings_json);
   void initialize_database_settings(rapidjson::Value::ConstObject const& settings_json);
 
   friend class ServerSettingsLoader;
@@ -43,8 +43,8 @@ class ServerSettings {
   [[nodiscard]] static auto const& server_settings() {
     return instance_->server_settings_;
   }
-  [[nodiscard]] static auto const& httplib_settings() {
-    return instance_->httplib_settings_;
+  [[nodiscard]] static auto const& pistache_settings() {
+    return instance_->pistache_settings_;
   }
   [[nodiscard]] static auto const& logging_settings() {
     return instance_->logging_settings_;

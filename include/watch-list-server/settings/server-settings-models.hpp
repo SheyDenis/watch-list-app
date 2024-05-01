@@ -9,10 +9,11 @@
 #ifndef SERVER_SETTINGS_MODELS_HPP_
 #define SERVER_SETTINGS_MODELS_HPP_
 
-#include <httplib/httplib.h>
+#include <pistache/config.h>
 #include <spdlog/common.h>
 
 #include <string>
+#include <chrono>
 
 namespace watch_list_app::server::settings {
 
@@ -20,21 +21,22 @@ struct ServerSettingsBase {};
 
 struct ServerSettingsServer : public ServerSettingsBase {
   std::string server_address = "localhost";
-  int server_port = 8000;
+  std::uint16_t server_port = 8000;
   bool log_requests = false;
 };
 
-struct ServerSettingsHTTPLib : public ServerSettingsBase {
-  std::size_t thread_pool_size = CPPHTTPLIB_THREAD_POOL_COUNT;
-  std::size_t payload_max_length = CPPHTTPLIB_PAYLOAD_MAX_LENGTH;
-  std::size_t keep_alive_max_count = CPPHTTPLIB_KEEPALIVE_MAX_COUNT;
-  std::time_t keep_alive_timeout_sec = CPPHTTPLIB_KEEPALIVE_TIMEOUT_SECOND;
-  std::time_t read_timeout_sec = CPPHTTPLIB_READ_TIMEOUT_SECOND;
-  std::time_t read_timeout_usec = CPPHTTPLIB_READ_TIMEOUT_USECOND;
-  std::time_t write_timeout_sec = CPPHTTPLIB_WRITE_TIMEOUT_SECOND;
-  std::time_t write_timeout_usec = CPPHTTPLIB_WRITE_TIMEOUT_USECOND;
-  std::time_t idle_interval_sec = CPPHTTPLIB_IDLE_INTERVAL_SECOND;
-  std::time_t idle_interval_usec = CPPHTTPLIB_IDLE_INTERVAL_USECOND;
+struct ServerSettingsPistache : public ServerSettingsBase {
+  int max_backlog = Pistache::Const::MaxBacklog;
+//  std::size_t max_events = Pistache::Const::MaxEvents;
+//  std::size_t max_buffer = Pistache::Const::MaxBuffer;
+//  std::size_t workers = Pistache::Const::DefaultWorkers;
+//  std::size_t timer_pool_size = Pistache::Const::DefaultTimerPoolSize;
+  std::size_t max_request_size = Pistache::Const::DefaultMaxRequestSize;
+  std::size_t max_response_size = Pistache::Const::DefaultMaxResponseSize;
+  std::chrono::seconds header_timeout = Pistache::Const::DefaultHeaderTimeout;
+  std::chrono::seconds keep_alive_timeout = Pistache::Const::DefaultKeepaliveTimeout;
+  std::chrono::seconds ssl_handshake_timeout = Pistache::Const::DefaultSSLHandshakeTimeout;
+//  std::size_t chunk_size = Pistache::Const::ChunkSize;
 };
 
 struct ServerSettingsLogging : public ServerSettingsBase {

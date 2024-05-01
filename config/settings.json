@@ -4,9 +4,8 @@
     "server_port": 8000,
     "log_requests": true
   },
-  "httplib": {
-    "thread_pool_size": 1,
-    "keep_alive_max_count": 1
+  "pistache": {
+    "workers": 1
   },
   "logging": {
     "level": "debug"

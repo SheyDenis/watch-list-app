@@ -15,23 +15,23 @@ SET(CMAKE_MODULE_PATH
 INCLUDE(cmake-utils)
 INCLUDE(iwyu)
 
+FIND_PACKAGE(Pistache REQUIRED)
 FIND_PACKAGE(RapidJSON REQUIRED)
 FIND_PACKAGE(fmt REQUIRED)
-FIND_PACKAGE(httplib REQUIRED)
 FIND_PACKAGE(spdlog REQUIRED)
 FIND_PACKAGE(stduuid REQUIRED)
 
 ADD_EXECUTABLE(${EXEC_NAME}
-               src/dal/database-json.cpp
-               src/dal/database.cpp
+               #               src/dal/database-json.cpp
+               #               src/dal/database.cpp
                src/handlers/handler-base.cpp
-               src/handlers/handler-error.cpp
-               src/handlers/handler-health-check.cpp
+               #               src/handlers/handler-error.cpp
+               #               src/handlers/handler-health-check.cpp
                src/handlers/handler-index.cpp
-               src/handlers/handler-users.cpp
+               #               src/handlers/handler-users.cpp
                src/main.cpp
-               src/models/base-model.cpp
-               src/models/user-model.cpp
+               #               src/models/base-model.cpp
+               #               src/models/user-model.cpp
                src/server-generic-error.cpp
                src/server-listener.cpp
                src/settings/server-settings-loader.cpp
@@ -50,8 +50,8 @@ TARGET_LINK_DIRECTORIES(${EXEC_NAME}
 
 TARGET_LINK_LIBRARIES(${EXEC_NAME}
                       PUBLIC
+                      Pistache::Pistache
                       fmt::fmt
-                      httplib::httplib
                       rapidjson
                       spdlog::spdlog
                       stduuid::stduuid

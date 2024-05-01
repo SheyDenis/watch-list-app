@@ -9,11 +9,13 @@
 #ifndef HANDLER_INDEX_HPP_
 #define HANDLER_INDEX_HPP_
 
-#include <httplib/httplib.h>
+#include <pistache/endpoint.h>
+#include <pistache/router.h>
 
 #include "watch-list-server/handlers/handler-base.hpp"
-#include "watch-list-server/handlers/handler-error.hpp"
-#include "watch-list-server/handlers/handler-traits.hpp"
+#include "watch-list-server/pistache_utils.hpp"
+// #include "watch-list-server/handlers/handler-error.hpp"
+// #include "watch-list-server/handlers/handler-traits.hpp"
 
 namespace watch_list_app::server::handlers {
 
@@ -25,9 +27,15 @@ class HandlerIndex : public HandlerBase {
   HandlerIndex();
 
  public:
-  ~HandlerIndex() override = default;
+  ~HandlerIndex() = default;
 
-  [[nodiscard]] OptionalHandlerError handle_get_impl(httplib::Request const& req, httplib::Response& res) override;
+  //  std::shared_ptr<Pistache::Tcp::Handler> clone()const override{
+  //    return HandlerInstance<HandlerIndex>::instance();
+  //  }
+
+  //  void onRequest(Pistache::Http::Request const& request, Pistache::Http::ResponseWriter response) override;
+  void handle_get(RestRequest const& request, HttpResponseWriter response);
+  //  [[nodiscard]] OptionalHandlerError handle_get_impl(httplib::Request const& req, httplib::Response& res) override;
 };
 
 }  // namespace watch_list_app::server::handlers

@@ -1,7 +1,7 @@
 [requires]
 catch2/3.5.0
-cpp-httplib/0.14.3
 fmt/10.1.1
+pistache/cci.20240107
 rapidjson/cci.20230929
 spdlog/1.12.0
 stduuid/1.2.3

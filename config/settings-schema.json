@@ -23,50 +23,58 @@
         }
       }
     },
-    "httplib": {
+    "pistache": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "thread_pool_size": {
+        "max_backlog": {
           "type": "integer",
           "minimum": 1,
           "maximum": 100
         },
-        "keep_alive_max_count": {
+        "max_events": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_buffer": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workers": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timer_pool_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_request_size": {
+          "type": "integer",
+          "minimum": 256
+        },
+        "max_response_size": {
+          "type": "integer",
+          "minimum": 256
+        },
+        "header_timeout_sec": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "body_timeout_sec": {
           "type": "integer",
           "minimum": 1
         },
         "keep_alive_timeout_sec": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
-        "read_timeout_sec": {
+        "ssl_handshake_timeout_sec": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
-        "read_timeout_usec": {
+        "chunk_size": {
           "type": "integer",
-          "minimum": 0
-        },
-        "write_timeout_sec": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "write_timeout_usec": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "idle_interval_sec": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "idle_interval_usec": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "payload_max_length": {
-          "type": "integer",
-          "minimum": 0
+          "minimum": 1024
         }
       }
     },

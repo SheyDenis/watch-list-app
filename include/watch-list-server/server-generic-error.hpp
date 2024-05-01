@@ -1,5 +1,5 @@
 /**
- * @file server-error.hpp
+ * @file server-generic-error.hpp
  * @author denis
  * @brief
  * @date 12024-01-04

@@ -32,7 +32,7 @@ void show_help(char const* executable) {
 }
 
 void configure_logger(spdlog::level::level_enum level = spdlog::level::level_enum::debug) {
-  watch_list_app::server::ServerLogger::configure_logger(watch_list_app::server::ServerConstants::kRootLoggerName, level);
+  watch_list_app::server::ServerLogger::configure_logger(watch_list_app::server::ServerConstants::ROOT_LOGGER_NAME, level);
 }
 
 bool settings_path(int argc, char* argv[], std::string& output) {
@@ -40,7 +40,7 @@ bool settings_path(int argc, char* argv[], std::string& output) {
     output.assign(argv[1]);
     return true;
   }
-  auto settings_file_path = watch_list_app::server::ServerConstants::get_settings_file_path();
+  auto const* const settings_file_path = watch_list_app::server::ServerConstants::get_settings_file_path();
   if (settings_file_path == nullptr) {
     return false;
   }

@@ -8,8 +8,6 @@
 
 #include "watch-list-server/handlers/handler-index.hpp"
 
-#include <httplib/httplib.h>
-
 #include <memory>
 #include <optional>
 
@@ -17,10 +15,14 @@ namespace watch_list_app::server::handlers {
 
 HandlerIndex::HandlerIndex() : HandlerBase("HandlerIndex") {}
 
-OptionalHandlerError HandlerIndex::handle_get_impl([[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
-  res.set_content("Potato!", "text/plain");
-  res.status = httplib::StatusCode::OK_200;
-  return std::nullopt;
+void HandlerIndex::handle_get(RestRequest const& request, HttpResponseWriter response) {
+  response.send(HttpCode::Ok, "Potato!", MimeMediaType(MimeType::Text, MimeSubtype::Plain));
 }
+
+// OptionalHandlerError HandlerIndex::handle_get_impl([[maybe_unused]] httplib::Request const& req, httplib::Response& res) {
+//   res.set_content("Potato!", "text/plain");
+//   res.status = httplib::StatusCode::OK_200;
+//   return std::nullopt;
+// }
 
 }  // namespace watch_list_app::server::handlers

@@ -17,8 +17,8 @@ namespace watch_list_app::server {
 
 class ServerConstants {
  public:
-  static auto constexpr kRootLoggerName = "root";
-  static auto constexpr kSettingsFilePathEnvVar = "SETTINGS_FILE_PATH";
+  static auto constexpr ROOT_LOGGER_NAME = "root";
+  static auto constexpr SETTINGS_FILE_PATH_ENV_VAR = "SETTINGS_FILE_PATH";
 
  private:
   template <typename T>
@@ -32,7 +32,7 @@ class ServerConstants {
 
  public:
   static spdlog::logger& root_logger() {
-    return *spdlog::get(kRootLoggerName);
+    return *spdlog::get(ROOT_LOGGER_NAME);
   }
 
   static bool include_debug_data() {
@@ -46,7 +46,7 @@ class ServerConstants {
   }
 
   static char const* get_settings_file_path() {
-    return get_env_var<char const*>(kSettingsFilePathEnvVar, nullptr);
+    return get_env_var<char const*>(SETTINGS_FILE_PATH_ENV_VAR, nullptr);
   }
 };
 
