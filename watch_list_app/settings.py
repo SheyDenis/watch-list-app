@@ -80,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'watch_list_app.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'watch_list_app.urls'
@@ -151,3 +152,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'rest_api.User'
+
+LOGIN_REQUIRED_URLS = (r'/api/(.*)$',)
