@@ -1,14 +1,16 @@
 # Build
-.build/
-CMakeUserPresets.json
-build/
-cmake-build-*/
-include/watch-list-server/server-settings-schema.hpp
+*.egg-info/
+*.whl
+dist/
 
 # IDE
+.idea/
+http-client.private.env.json
 
 # Misc
 !.github/
+*.log
+.env
 /database/
 
 # Python
