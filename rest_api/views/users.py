@@ -17,17 +17,17 @@ class UsersView(View):
         super().__init__(**kwargs)
         self._logger = logging.getLogger(type(self).__name__)
 
-    def get(self, request: WSGIRequest):
-        user_entity: User
+    def get(self, request: WSGIRequest) -> HttpResponse:
+        entity: User
         try:
-            user_entity = User.objects.get(pk=request.user.id)
+            entity = User.objects.get(pk=request.user.id)
         except ObjectDoesNotExist:
             # This is bad because the user is logged in, so we should be able to fetch it from the DB.
             self._logger.error(f'Failed to fetch user data for user [{request.user.id=}]')
             return HttpResponse(status=HTTPStatus.NOT_FOUND)
 
         data: Dict[str, Any] = model_to_dict(
-            user_entity,
+            entity,
             fields=(
                 'email',
                 'first_name',
@@ -37,3 +37,7 @@ class UsersView(View):
             ),
         )
         return JsonResponse(data=data, status=HTTPStatus.OK)
+
+    def put(self, request: WSGIRequest) -> HttpResponse:
+        # TODO - Implement allowing modifying user fields. <WLA-27>
+        return HttpResponse(status=HTTPStatus.NOT_IMPLEMENTED)

@@ -8,7 +8,7 @@ from django.views import View
 
 class SessionsView(View):
 
-    def post(self, request: WSGIRequest):
+    def post(self, request: WSGIRequest) -> HttpResponse:
         if not all(k in request.POST for k in ('username', 'password')):
             return HttpResponse(status=HTTPStatus.BAD_REQUEST)
 
@@ -20,6 +20,6 @@ class SessionsView(View):
             return HttpResponse(status=HTTPStatus.OK)
         return HttpResponse(status=HTTPStatus.UNAUTHORIZED)
 
-    def delete(self, request: WSGIRequest):
+    def delete(self, request: WSGIRequest) -> HttpResponse:
         logout(request)
         return HttpResponse(status=HTTPStatus.OK)

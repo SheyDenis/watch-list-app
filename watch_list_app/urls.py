@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from rest_api.views.sessions import SessionsView
+from rest_api.views import SessionsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
