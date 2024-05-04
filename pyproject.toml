@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 
+watch-list-common = { path = "watch_list_common/", develop = true }
+
 Django = "~5.0.0"
 overrides = "*"
 pre-commit = "*"

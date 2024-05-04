@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import logging
-import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -50,10 +49,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ[ServerConstants.DJANGO_SECRET_KEY_ENV_VAR]
+SECRET_KEY = ServerConstants.django_secret_key().get_secret_value()
+SECRET_KEY_FALLBACKS = [k.get_secret_value() for k in ServerConstants.django_secret_key_fallbacks()]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ServerConstants.django_debug()
+
+# General server configs
+APPEND_SLASH = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 

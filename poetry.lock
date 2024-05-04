@@ -805,6 +805,19 @@ docs = ["furo (>=2023.7.26)", "proselint (>=0.13)", "sphinx (>=7.1.2,!=7.3)", "s
 test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7)", "packaging (>=23.1)", "pytest (>=7.4)", "pytest-env (>=0.8.2)", "pytest-freezer (>=0.4.8)", "pytest-mock (>=3.11.1)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)", "setuptools (>=68)", "time-machine (>=2.10)"]
 
 [[package]]
+name = "watch-list-common"
+version = "1.0.0"
+description = "Common utilities for the project"
+optional = false
+python-versions = "^3.11"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "watch_list_common"
+
+[[package]]
 name = "xenon"
 version = "0.9.1"
 description = "Monitor code metrics for Python on your CI server"
@@ -854,4 +867,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0ef9c2984d93df26b4c38bc424a41e1567cde26e6ce1a9c2732974dc34388bf8"
+content-hash = "aed8c04a577f2d57bc6d058c569ee30c981dd4cff6953567218fae07710ffb4d"
