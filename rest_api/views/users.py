@@ -36,6 +36,10 @@ class UsersView(View):
                 'username',
             ),
         )
+        data['watch_lists'] = {
+            str(wl.uuid): wl.name for wl in entity.watchlist_set.filter(user=entity)
+        }
+
         return JsonResponse(data=data, status=HTTPStatus.OK)
 
     def put(self, request: WSGIRequest) -> HttpResponse:

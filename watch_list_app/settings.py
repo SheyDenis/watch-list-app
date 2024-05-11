@@ -106,10 +106,14 @@ WSGI_APPLICATION = 'watch_list_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+__DB_ROOT: Path = BASE_DIR / 'database'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database' / 'db.sqlite3',  # FIXME - Get path to DB from settings. <WLA-22>
+        'NAME': __DB_ROOT / 'db.sqlite3',  # FIXME - Get path to DB from settings. <WLA-22>
+        'TEST': {
+            'NAME': __DB_ROOT / 'test_db.sqlite3',
+        },
     }
 }
 
@@ -154,3 +158,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'rest_api.User'
 
 LOGIN_REQUIRED_URLS = (r'/api/(.*)$',)
+
+TEST_RUNNER = 'watch_list_app.test_runner.PyTestRunner'

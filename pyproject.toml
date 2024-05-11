@@ -13,13 +13,14 @@ watch-list-common = { path = "watch_list_common/", develop = true }
 Django = "~5.0.0"
 overrides = "*"
 pre-commit = "*"
+pydantic = { version = "*", extras = ["email"] }
 python-dotenv = "*"
 
 [tool.poetry.group.dev.dependencies]
 isort = "*"
-pydantic = "*"
 pylint = "*"
 pytest = "*"
+pytest-django = "*"
 xenon = "*"
 yapf = "*"
 
