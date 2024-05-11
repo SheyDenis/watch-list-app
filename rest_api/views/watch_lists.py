@@ -45,16 +45,13 @@ class WatchListsView(View):
         except ObjectDoesNotExist:
             return HttpResponse(status=HTTPStatus.NOT_FOUND)
 
-        return JsonResponse(status=HTTPStatus.OK, data=model_to_dict(entity))
+        return JsonResponse(status=HTTPStatus.OK, data=WatchListDTO.from_model(entity).model_dump())
 
     def list(self, request: WSGIRequest) -> HttpResponse:
         data: QuerySet = WatchList.objects.filter(user=request.user.id)
         res_data: List[Dict[str, Any]] = [{
             'uuid': str(entity.uuid),
-            **WatchListDTO.model_validate(model_to_dict(
-                entity,
-                exclude=('uuid',),
-            )).model_dump()
+            **WatchListDTO.from_model(entity).model_dump(exclude={'id', 'user'})
         } for entity in data]
         return HttpResponse(status=HTTPStatus.OK, content_type='application/json', content=json.dumps(res_data))
 
