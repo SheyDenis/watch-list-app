@@ -1,7 +1,6 @@
+import tomllib
 from pathlib import Path
 from typing import Any, Dict
-
-import tomllib
 
 
 def get_project_root() -> Path:

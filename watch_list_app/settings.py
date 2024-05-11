@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import logging
-import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -50,10 +49,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ[ServerConstants.DJANGO_SECRET_KEY_ENV_VAR]
+SECRET_KEY = ServerConstants.django_secret_key().get_secret_value()
+SECRET_KEY_FALLBACKS = [k.get_secret_value() for k in ServerConstants.django_secret_key_fallbacks()]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ServerConstants.django_debug()
+
+# General server configs
+APPEND_SLASH = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -77,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'watch_list_app.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'watch_list_app.urls'
@@ -102,10 +106,14 @@ WSGI_APPLICATION = 'watch_list_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+__DB_ROOT: Path = BASE_DIR / 'database'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database' / 'db.sqlite3',  # FIXME - Get path to DB from settings. <WLA-22>
+        'NAME': __DB_ROOT / 'db.sqlite3',  # FIXME - Get path to DB from settings. <WLA-22>
+        'TEST': {
+            'NAME': __DB_ROOT / 'test_db.sqlite3',
+        },
     }
 }
 
@@ -148,3 +156,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'rest_api.User'
+
+LOGIN_REQUIRED_URLS = (r'/api/(.*)$',)
+
+TEST_RUNNER = 'watch_list_app.test_runner.PyTestRunner'

@@ -12,6 +12,7 @@ http-client.private.env.json
 *.log
 .env
 /database/
+tmp/
 
 # Python
 .venv/
