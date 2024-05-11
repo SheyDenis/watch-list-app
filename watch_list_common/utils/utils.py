@@ -1,5 +1,5 @@
 def str2bool(s: str) -> bool:
-    # DEV MARKER - Document this
+    """Convert a string to a boolean."""
     if isinstance(s, bool):
         return s
     if not isinstance(s, str):

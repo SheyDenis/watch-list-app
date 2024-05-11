@@ -40,7 +40,7 @@ class UsersView(View):
             str(wl.uuid): wl.name for wl in entity.watchlist_set.filter(user=entity)
         }
 
-        return JsonResponse(data=data, status=HTTPStatus.OK)
+        return JsonResponse(status=HTTPStatus.OK, data=data)
 
     def put(self, request: WSGIRequest) -> HttpResponse:
         # TODO - Implement allowing modifying user fields. <WLA-27>
