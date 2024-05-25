@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  DJANGO_SECRET_KEY: TESTS_DJANGO_SECRET_KEY
+
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -26,5 +29,7 @@ jobs:
         run: pipx install poetry
       - name: Install Dependencies
         run: poetry install
+      - name: Run unittests
+        run: mkdir database && poetry run python manage.py test
       - name: Check Tag Is New
         run: '[[ -z $(git tag -l | grep -E ^$(python tools/get_project_version.py)$) ]]'

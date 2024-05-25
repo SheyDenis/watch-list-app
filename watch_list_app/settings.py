@@ -16,6 +16,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from watch_list_app.server_constants import ServerConstants
+from watch_list_common.django_utils import DjangoSettingsHook
 
 load_dotenv()
 
@@ -160,3 +161,5 @@ AUTH_USER_MODEL = 'rest_api.User'
 LOGIN_REQUIRED_URLS = (r'/api/(.*)$',)
 
 TEST_RUNNER = 'watch_list_app.test_runner.PyTestRunner'
+
+DjangoSettingsHook.django_settings_loaded()

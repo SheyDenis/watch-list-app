@@ -1,11 +1,12 @@
 import json
-from typing import List, Union
+from typing import List, Optional, Set, Union
 
 from django.http import HttpResponse
 from pydantic import BaseModel
 
 from rest_api.models import WatchList
 from rest_api.models.user import User
+from watch_list_common.datetime_utils import DatetimeUtils
 
 
 class TestCaseHelper:
@@ -18,12 +19,15 @@ class TestCaseHelper:
         if count < 0:
             raise ValueError(f'count must be >=0 [{count=}]')
 
-        watchlists: List[WatchList] = [WatchList.objects.create(user=user, name=f'test_watchlist_{i+1}') for i in range(count)]
+        watchlists: List[WatchList] = [
+            WatchList.objects.create(user=user, name=f'test_watchlist_{i+1}', date_created=DatetimeUtils.now(),
+                                     date_modified=DatetimeUtils.now()) for i in range(count)
+        ]
 
         return watchlists
 
     @staticmethod
-    def assert_response_json_eq(res: HttpResponse, expected: Union[BaseModel, dict, list]):
+    def assert_response_json_eq(res: HttpResponse, expected: Union[BaseModel, dict, list], *, excluded: Optional[Set[str]] = None):
         """Assert the response JSON is equal to the expected JSON."""
 
         if not isinstance(res, HttpResponse):
@@ -34,4 +38,11 @@ class TestCaseHelper:
             # Dump and load to force encoding UUID/Datetime/etc objects.
             expected_res = json.loads(expected.model_dump_json())
 
-        assert res.json() == expected_res
+        if excluded is None:
+            assert res.json() == expected_res
+        else:
+            assert {
+                k: v for k, v in res.json().items() if k not in excluded
+            } == {
+                k: v for k, v in expected_res.items() if k not in excluded
+            }

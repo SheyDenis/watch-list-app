@@ -1,7 +1,10 @@
+import datetime
 from typing import Any, Dict, Optional, Set, Type, TypeVar, cast
 
 from django.db import models
 from pydantic import BaseModel
+
+from watch_list_common.datetime_utils import DatetimeUtils
 
 T = TypeVar('T', bound=BaseModel)
 
@@ -19,6 +22,10 @@ class BaseConfig:
 
     # Properties to always be excluded when dumping models.
     exclude_always: Set[str] = {'user', 'password'}
+
+    json_encoders = {
+        datetime.datetime: DatetimeUtils.format_datetime,
+    }
 
 
 class ConvertibleConfig:

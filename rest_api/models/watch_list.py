@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 from uuid import UUID, uuid4
 
@@ -12,6 +13,8 @@ class WatchList(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, serialize=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False)
     name = models.CharField(max_length=80, editable=True)
+    date_created = models.DateTimeField()
+    date_modified = models.DateTimeField()
 
     class Meta:
         constraints: List[models.BaseConstraint] = [
@@ -23,8 +26,11 @@ class WatchListDTO(ConvertibleMixin, BaseModel):
     id: Optional[UUID] = Field(alias='uuid', default=None)
     user: Optional[int] = Field(default=None)
     name: str = Field(max_length=80)
+    date_created: Optional[datetime.datetime] = Field(default=None)
+    date_modified: Optional[datetime.datetime] = Field(default=None)
 
-    class Config(ConvertibleConfig, BaseConfig):
+    class Config(BaseConfig, ConvertibleConfig):
+        excluded_none_by_default = BaseConfig.excluded_none_by_default | {'date_created', 'date_modified'}
         ModelType = WatchList
 
         from_model_rename = {

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 
-from watch_list_common.pydantic_utils import BaseConfig
+from watch_list_common.pydantic_utils.model_utils import BaseConfig
 
 
 class RequestErrorModel(BaseModel):

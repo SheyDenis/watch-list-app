@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from django.http import JsonResponse
 
-from watch_list_common.pydantic_utils import RequestErrorModel
+from watch_list_common.pydantic_utils.models import RequestErrorModel
 
 
 class JsonErrorResponse(JsonResponse):

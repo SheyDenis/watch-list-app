@@ -1,0 +1,1 @@
+from watch_list_common.django_utils.django_settings_hook import DjangoSettingsHook
