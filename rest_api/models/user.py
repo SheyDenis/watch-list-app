@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
@@ -20,8 +20,8 @@ class UserDTO(ConvertibleMixin, BaseModel):
     email: Optional[EmailStr] = Field()
     is_staff: bool = Field(exclude=True)
     is_active: bool = Field(exclude=True)
-    date_joined: datetime = Field(exclude=True)
-    last_login: Optional[datetime] = Field(exclude=True, default=None)
+    date_joined: datetime.datetime = Field(exclude=True)
+    last_login: Optional[datetime.datetime] = Field(exclude=True, default=None)
 
     class Config(BaseConfig, ConvertibleConfig):
 

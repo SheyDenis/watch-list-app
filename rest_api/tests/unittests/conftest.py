@@ -1,3 +1,4 @@
+import datetime
 from http import HTTPStatus
 from typing import Iterable, List
 
@@ -7,6 +8,7 @@ from django.test import Client
 from rest_api.models import WatchList
 from rest_api.models.user import User
 from rest_api.tests.helpers import TestCaseHelper, TestWatchListParam, TestWatchListReturnType, UserWithWatchListsParam
+from watch_list_common.datetime_utils import DatetimeUtils
 
 
 @pytest.fixture(name='api_client', scope='function')
@@ -42,6 +44,8 @@ def __test_watchlist(test_user: User, request: pytest.FixtureRequest) -> TestWat
         WatchList.objects.create(
             user=test_user,
             name=f'test_watchlist_{i+1}',
+            date_created=DatetimeUtils.now() - datetime.timedelta(hours=1),
+            date_modified=DatetimeUtils.now() - datetime.timedelta(minutes=10),
         ) for i in range(watchlist_count_param.watchlist_count)
     ]
     if len(test_watchlists) == 1:

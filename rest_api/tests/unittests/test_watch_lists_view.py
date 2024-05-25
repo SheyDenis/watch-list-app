@@ -1,3 +1,4 @@
+import datetime
 from http import HTTPStatus
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 from uuid import UUID, uuid4
@@ -7,7 +8,8 @@ from django.http import HttpResponse
 from django.test import Client
 
 from rest_api.models import User, WatchList, WatchListDTO
-from rest_api.tests.helpers import TestCaseHelper, TestWatchListParam, TestWatchListReturnType, UserWithWatchListsParam
+from rest_api.tests.helpers import DatetimeEq, TestCaseHelper, TestWatchListParam, TestWatchListReturnType, UserWithWatchListsParam
+from watch_list_common.datetime_utils import DatetimeUtils
 from watch_list_common.pydantic_utils import RequestErrorModel
 
 
@@ -74,10 +76,13 @@ class TestWatchListsView:
 
         res_json = res.json()
         _ = UUID(hex=res_json['uuid'])  # Verify response uuid is valid.
-        TestCaseHelper.assert_response_json_eq(res, {
-            'uuid': str(test_watchlist.uuid),
-            'name': 'test_watchlist_1',
-        })
+        TestCaseHelper.assert_response_json_eq(
+            res, {
+                'uuid': str(test_watchlist.uuid),
+                'name': 'test_watchlist_1',
+                'date_created': DatetimeEq(test_watchlist.date_created, datetime.timedelta(seconds=1)),
+                'date_modified': DatetimeEq(test_watchlist.date_modified, datetime.timedelta(seconds=1)),
+            })
 
     @pytest.mark.usefixtures('test_watchlist')
     def test_get_no_resource(self, api_client: Client):
@@ -101,7 +106,12 @@ class TestWatchListsView:
         TestCaseHelper.assert_response_json_eq(res, [{
             'uuid': str(wl.uuid),
             'name': wl.name,
+            'date_created': DatetimeUtils.format_datetime(wl.date_created),
+            'date_modified': DatetimeUtils.format_datetime(wl.date_modified),
         } for wl in test_watchlist])
+        for wl in test_watchlist:
+            assert wl.date_created is not None, wl
+            assert wl.date_modified is not None, wl
 
     @pytest.mark.parametrize(('test_watchlist', 'user_with_watchlists', 'create_request', 'expected_status_code'),
                              (
@@ -124,7 +134,14 @@ class TestWatchListsView:
         resource_uuid: UUID = WatchList.objects.get(user=test_user, name=create_request.name).uuid
 
         if res.status_code == HTTPStatus.CREATED:
-            TestCaseHelper.assert_response_json_eq(res, WatchListDTO(uuid=resource_uuid, **create_request.model_dump()))
+            TestCaseHelper.assert_response_json_eq(res, WatchListDTO(uuid=resource_uuid, **create_request.model_dump()),
+                                                   excluded={'date_created', 'date_modified'})
+            assert {
+                k: res.json()[k] for k in ('date_created', 'date_modified')
+            } == {
+                'date_created': DatetimeEq(DatetimeUtils.now(), datetime.timedelta(seconds=1)),
+                'date_modified': DatetimeEq(DatetimeUtils.now(), datetime.timedelta(seconds=1)),
+            }
         else:
             TestCaseHelper.assert_response_json_eq(res, RequestErrorModel(detail='resource with this name already exists'))
 

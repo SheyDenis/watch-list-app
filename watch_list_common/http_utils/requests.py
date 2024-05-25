@@ -2,7 +2,7 @@ from functools import wraps
 from http import HTTPStatus
 
 from watch_list_common.http_utils.responses import JsonErrorResponse
-from watch_list_common.pydantic_utils import RequestErrorModel
+from watch_list_common.pydantic_utils.models import RequestErrorModel
 
 
 def forbid_resource_id(view_func):

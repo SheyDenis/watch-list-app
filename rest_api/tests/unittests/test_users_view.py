@@ -5,6 +5,7 @@ import pytest
 from django.test import Client
 
 from rest_api.models import User, WatchList
+from watch_list_common.datetime_utils import DatetimeUtils
 
 
 @pytest.mark.django_db(transaction=True)
@@ -63,11 +64,18 @@ class TestUsersView:
     @pytest.mark.usefixtures('setup_test_users')
     def test_get_watch_lists(self, api_client: Client):
         num_wl_per_user: Final[int] = 3
-        _: List[WatchList] = [WatchList.objects.create(user=self.test_user_1, name=f'watch_list_{idx}') for idx in range(num_wl_per_user)]
-        user_watch_lists_2: List[WatchList] = [
-            WatchList.objects.create(user=self.test_user_2, name=f'watch_list_{idx}') for idx in range(num_wl_per_user)
+        _: List[WatchList] = [
+            WatchList.objects.create(user=self.test_user_1, name=f'watch_list_{idx}', date_created=DatetimeUtils.now(),
+                                     date_modified=DatetimeUtils.now()) for idx in range(num_wl_per_user)
         ]
-        _: List[WatchList] = [WatchList.objects.create(user=self.test_user_3, name=f'watch_list_{idx}') for idx in range(num_wl_per_user)]
+        user_watch_lists_2: List[WatchList] = [
+            WatchList.objects.create(user=self.test_user_2, name=f'watch_list_{idx}', date_created=DatetimeUtils.now(),
+                                     date_modified=DatetimeUtils.now()) for idx in range(num_wl_per_user)
+        ]
+        _: List[WatchList] = [
+            WatchList.objects.create(user=self.test_user_3, name=f'watch_list_{idx}', date_created=DatetimeUtils.now(),
+                                     date_modified=DatetimeUtils.now()) for idx in range(num_wl_per_user)
+        ]
 
         res = api_client.get('/api/users/')
         assert res.status_code == HTTPStatus.OK
