@@ -30,6 +30,6 @@ jobs:
       - name: Install Dependencies
         run: poetry install
       - name: Run unittests
-        run: poetry run python manage.py test
+        run: mkdir database && poetry run python manage.py test
       - name: Check Tag Is New
         run: '[[ -z $(git tag -l | grep -E ^$(python tools/get_project_version.py)$) ]]'
